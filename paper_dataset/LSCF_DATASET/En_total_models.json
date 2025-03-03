@@ -1,0 +1,402 @@
+[
+    {
+        "instruction": "Implement a cubic core-shell structure modeling with LAMMPS.",
+        "input": "The core is composed of Cu atoms, with an outer layer coated with a certain thickness of Cu atoms. Create two regions for the core and the outer shell, and use the create_atoms command to fill atoms in both regions.",
+        "output": "# Model basic parameters\nunits metal  # Units: real units\nboundary p p p  # Boundary conditions, periodic boundaries\natom_style atomic  # Atom type\n\n# Create a square region\nregion box block 0 100 0 100 0 100  # Create a square region\ncreate_box 2 box  # Generate a square box, 2 types of atoms\n\n# Create a spherical shell region\nregion block1 block 0 100 0 100 0 100 units box\nregion block2 block 20 80 20 80 20 80 side out units box\nregion shell intersect 2 block1 block2  # A shell with a thickness of 20\n\n# Create a core region\nregion block_in block 20 80 20 80 20 80 units box\n\n# Fill the core with type 2 atoms\nlattice fcc 3.61  # Lattice constant 3.61\ncreate_atoms 2 region block_in\n# Fill the shell with type 1 atoms\nlattice fcc 3.61  # Lattice constant 3.61\ncreate_atoms 1 region shell\n\n# Set atomic masses\nmass 2 63.5  # Mass of type 2 atoms\nmass 1 63.5  # Mass of type 1 atoms\n\n# Save file\nwrite_data heke.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement a spherical shell structure modeling with LAMMPS.",
+        "input": "The core is made of Al atoms, with an outer layer coated with a certain thickness of Al atoms. Method:\n(1) Create two spherical regions for the inner and outer spheres.\n(2) Fill the outer sphere region with type 1 atoms.\n(3) Remove type 1 atoms filled in the inner sphere region.\n(4) Fill the inner sphere region with type 2 atoms.",
+        "output": "# Model basic parameters\nunits metal\natom_style atomic\nboundary p p p\n# Create simulation region\nregion box block -50 50 -50 50 -50 50 # Generate a rectangular box region with a side length of 100\ncreate_box 2 box\n# Create outer sphere region\nregion ball1 sphere 0 0 0 50 units box  # Generate a spherical region with a radius of 50\n\n# Create inner sphere region\nregion ball2 sphere 0 0 0 40 units box # Generate a spherical region with a radius of 40, creating a shell thickness of 10\n\n# Fill the outer sphere region with type 1 atoms\nlattice fcc 4.05  # Set lattice parameter\ncreate_atoms 1 region ball1\n\n# Delete type 1 atoms in the inner sphere region\ndelete_atoms region ball2 compress yes  # Compress IDs\n\n# Fill the inner sphere region with type 2 atoms\nlattice fcc 4.05 # Set lattice parameter\ncreate_atoms 2 region ball2\n\n# Set atomic masses\nmass 1 27 # Set mass of type 1 atoms to 27\nmass 2 27 # Set mass of type 2 atoms to 27\n\n# Save file\nwrite_data qiuke.data # Output qiuke.data file",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement a capsule particle molecular model with LAMMPS.",
+        "input": "Taking Cu atoms as an example. Create three regions: the upper hemisphere region, the cylindrical region, and the lower hemisphere region.",
+        "output": "# Model basic parameters\nunits metal # Atom model: Metal unit model\nboundary p p p # Boundary conditions, periodic boundaries\natom_style atomic # Atom type\n\n# Generate a rectangular region\nregion box block -40 40 -40 40 -80 80  # Create a rectangular region\ncreate_box 1 box # Generate a box, 2 types of atoms\n\n# Create a cylindrical region\nregion cylinder1_out cylinder z 0 0 40 -40 40 side out units box   # Cylindrical outer side\nregion cylinder2_out cylinder z 0 0 40 -40 40 units box            # Cylindrical inner side\n\n# Create hemispherical regions\nregion ball1_out sphere 0 0 40 40 units box\nregion ball2_out sphere 0 0 -40 40 units box\nregion banqiu1_out intersect 2 ball1_out cylinder1_out # Upper hemisphere\nregion banqiu2_out intersect 2 ball2_out cylinder1_out # Lower hemisphere\n\n# Fill the outer layer with type 1 atoms\nlattice fcc 3.62 # Lattice parameter setting\ncreate_atoms 1 region banqiu1_out # Fill the upper hemisphere with type 1 atoms\ncreate_atoms 1 region banqiu2_out # Fill the lower hemisphere with type 1 atoms\ncreate_atoms 1 region cylinder2_out # Fill the cylinder with type 1 atoms\n\n# Set atomic mass\nmass 1 64 # Mass of type 1 atoms\n\n# Save file\nwrite_data jiaonang.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement a nanotube model with LAMMPS.",
+        "input": "Create three regions: the inner cylindrical region, the outer cylindrical region, and the tube region.",
+        "output": "# Model basic parameters\nunits metal # Atom model: Metal unit model\nboundary p p p # Boundary conditions, periodic boundaries\natom_style atomic # Atom type\n\n# Generate a rectangular region\nregion box block -40 40 -40 40 -80 80  # Create a rectangular region\ncreate_box 1 box # Generate a box with 2 types of atoms\n\n# Create a cylindrical region\nregion cylinder1 cylinder z 0 0 30 -80 80 side out units box   # Outer cylinder\nregion cylinder2 cylinder z 0 0 40 -80 80 units box            # Inner cylinder\n\n# Create a tube layer region\nregion tube intersect 2 cylinder1 cylinder2 # Tube region\n\n# Fill the outer layer with type 1 atoms\nlattice hcp 5 # Lattice parameter setting\ncreate_atoms 1 region tube # Fill the tube region with type 1 atoms\n\n# Set atomic mass\nmass 1 64 # Mass of type 1 atoms\n\n# Save file\nwrite_data tube.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement a high-entropy alloy modeling with LAMMPS.",
+        "input": "",
+        "output": "# Initial simulation system setup\nunits metal # Units\nboundary p p p # Boundary conditions\natom_style atomic # Atom type\ntimestep 0.001 # Time step\n\n# Build the model\nlattice fcc 3.56 # Set lattice parameters\nregion box block 0 10 0 10 0 10 # Create a rectangular region\ncreate_box 5 box\ncreate_atoms 1 box\n\n# Convert atoms of type 1 to other types\nset type 1 type/ratio 2 0.2 87393 # Convert 20% of type 1 atoms to type 2 atoms\nset type 1 type/ratio 3 0.5 87393 # Convert 50% of type 1 atoms to type 3 atoms\nset type 1 type/ratio 4 0.5 87393 # Convert 50% of type 1 atoms to type 4 atoms\nset type 3 type/ratio 5 0.5 87393 # Convert 50% of type 3 atoms to type 5 atoms\n\n# Set atomic types\nmass 1 27 # Al atom\nmass 2 56 # Fe atom\nmass 3 28 # Si atom\nmass 4 64 # Cu atom\nmass 5 24 # Mg atom\n\nwrite_data AlCuFeMgSi.data # Output data file",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement composite material/laminated structure modeling with LAMMPS.",
+        "input": "",
+        "output": "# Model basic parameters\nunits metal # Unit model: Metal unit model\nboundary p p p # Boundary conditions, periodic boundaries\natom_style atomic # Atom type\ntimestep 0.001 # Time step\n\n# Generate simulation region\nregion box block -25 25 -100 100 -10 10 # Create a rectangular region\ncreate_box 5 box # Generate a box with 5 types of atoms\n\n# Create the first layer material\nregion one block -25 25 -100 100 -10 -6 units box # Generate the first layer region\nlattice fcc 3.2\ncreate_atoms 1 region one # Fill with type 1 atoms \nmass 1 27 # Al atom\n\n# Create the second layer material\nregion two block -25 25 -100 100 -6 -2 units box # Generate the second layer region\nlattice fcc 3.2\ncreate_atoms 2 region two # Fill with type 2 atoms \nmass 2 24 # Mg atom\n\n# Create the third layer material\nregion three block -25 25 -100 100 -2 2 units box # Generate the third layer region\nlattice fcc 2.52\ncreate_atoms 3 region three # Fill with type 3 atoms \nmass 3 28 # Si atom\n\n# Create the fourth layer material\nregion four block -25 25 -100 100 2 6 units box # Generate the fourth layer region\nlattice fcc 3.2\ncreate_atoms 4 region four # Fill with type 4 atoms \nmass 4 56 # Fe atom\n\n# Create the fifth layer material\nregion five block -25 25 -100 100 6 10 units box # Generate the fifth layer region\nlattice fcc 3.2\ncreate_atoms 5 region five # Fill with type 5 atoms \nmass 5 64 # Cu atom\n\n# Save file\nwrite_data cenghe.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement a capsule core-shell structure modeling with LAMMPS.",
+        "input": "It is necessary to create the following regions twice: the upper hemisphere region, the cylindrical region, and the lower hemisphere region.",
+        "output": "# Model basic parameters\nunits metal # Atom model: Metal unit model\nboundary p p p # Boundary conditions, periodic boundaries\natom_style atomic # Atom type\n\n# Generate a rectangular region\nregion box block -40 40 -40 40 -80 80 # Create a rectangular region\ncreate_box 2 box # Generate a box with 2 types of atoms\n\n# Create outer cylindrical region\nregion cylinder1_out cylinder z 0 0 40 -40 40 side out units box # Outer side of the outer cylinder\nregion cylinder2_out cylinder z 0 0 40 -40 40 units box # Inner side of the outer cylinder\n\n# Create inner cylindrical region\nregion cylinder1_in cylinder z 0 0 30 -30 30 side out units box # Outer side of the inner cylinder\nregion cylinder2_in cylinder z 0 0 30 -30 30 units box # Inner side of the inner cylinder\n\n# Create outer hemispherical regions\nregion ball1_out sphere 0 0 40 40 units box\nregion ball2_out sphere 0 0 -40 40 units box\nregion banqiu1_out intersect 2 ball1_out cylinder1_out # Outer upper hemisphere\nregion banqiu2_out intersect 2 ball2_out cylinder1_out # Outer lower hemisphere\n\n# Create inner hemispherical regions\nregion ball1_in sphere 0 0 40 30 units box\nregion ball2_in sphere 0 0 -40 30 units box\nregion banqiu1_in intersect 2 ball1_in cylinder1_in # Inner upper hemisphere\nregion banqiu2_in intersect 2 ball2_in cylinder1_in # Inner lower hemisphere\n\n# Fill the outer layer with type 1 atoms\nlattice fcc 3.5288 # Lattice constant for Bi: 3.5288\ncreate_atoms 1 region banqiu1_out # Fill the outer upper hemisphere with type 1 atoms\ncreate_atoms 1 region banqiu2_out # Fill the outer lower hemisphere with type 1 atoms\ncreate_atoms 1 region cylinder2_out # Fill the outer cylinder with type 1 atoms\n\n# Delete type 1 atoms in the inner core region\ndelete_atoms region banqiu1_in compress yes # Delete type 1 atoms in the inner upper hemisphere\ndelete_atoms region banqiu2_in compress yes # Delete type 1 atoms in the inner lower hemisphere\ndelete_atoms region cylinder2_in compress yes # Delete type 1 atoms in the inner cylinder\n\n# Fill the inner core with type 2 atoms\nlattice sc 3.27 # Lattice constant for type 2 atoms: 3.27\ncreate_atoms 2 region banqiu1_in # Fill the inner upper hemisphere with type 2 atoms\ncreate_atoms 2 region banqiu2_in # Fill the inner lower hemisphere with type 2 atoms\ncreate_atoms 2 region cylinder2_in # Fill the inner cylinder with type 2 atoms\n\n# Set atomic masses\nmass 1 60 # Mass of type 1 atoms: 60 (arbitrary value set here)\nmass 2 200 # Mass of type 2 atoms: 200 (arbitrary value set here)\n\n# Save file\nwrite_data jiaonang.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of high-entropy alloy AlCuFeMgSi using LAMMPS.",
+        "input": "The main process is as follows:\n(1)Determine the general lattice structure, whether it is fcc or bcc, which can be obtained by consulting literature.\n(2)Determine the lattice constant, which can be the largest lattice constant among the alloy elements, but it is not necessary to choose the largest lattice constant; other numbers can also be selected. The lattice constant is only used for initial modeling, and an accurate lattice constant value will be obtained after relaxation.\n(3)Generate a box and fill it with type 1 atoms.\n(4)Use the set type/ratio command to randomly select atoms in proportion and convert them into other types of atoms.",
+        "output": "# Initial simulation system setup\nunits metal\nboundary p p p\natom_style atomic\ntimestep 0.001\n# Build the model\nlattice fcc 3.56\nregion box block 0 10 0 10 0 10 \ncreate_box 5 box\ncreate_atoms 1 box\n# Convert atoms of type 1 to other types\nset type 1 type/ratio 2 0.2 87393\nset type 1 type/ratio 3 0.5 87393\nset type 1 type/ratio 4 0.5 87393\nset type 3 type/ratio 5 0.5 87393\n# Set atomic types\nmass 1 27 # Al\nmass 2 56 # Fe\nmass 3 28 # Si\nmass 4 64 # Cu\nmass 5 24 # Mg\nwrite_data AlCuFeMgSi.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a series of regularly arranged nano-copper spheres using LAMMPS, achieving array characteristic structures.",
+        "input": "The replicate command can be used to create a supercell or a structure with array characteristics.",
+        "output": "lattice fcc 3.61\nregion Cu sphere 0 0 0 20 units box\ncreate_box 1 Cu\ncreate_atoms 1 region Cu\nreplicate 3 3 1\nmass 1 64\nwrite_data Cu.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a composite of cylindrical Ni and graphene layers using LAMMPS, inserting a layer of graphene into the cylindrical Ni nanorod.",
+        "input": "",
+        "output": "# Basic parameter settings in the input file\nunits metal\nboundary p p p\natom_style atomic\n\n# Generate a cylindrical Ni nanorod along the Z axis, with the cylinder rotation axis coordinates (0,0)\n# The radius is 30, and the top and bottom bases of the cylinder are at z-axis coordinates (-60,60), meaning the cylinder height is 120\nregion ni cylinder z 0 0 30 -60 60 units box\n# Generate the simulation box based on region ni, note: the simulation box is a cuboid, not a cylinder\ncreate_box 2 ni\n# Set the Ni lattice parameter and fill Ni atoms within region ni\nlattice fcc 3.52\ncreate_atoms 1 region ni\n\n# Delete the middle Ni layer\nregion Ni_del block INF INF INF INF 0 3 units box\ndelete_atoms region Ni_del\n\n# Generate a Graphene layer\nlattice custom 2.4768 a1 1.0 0.0 0.0 a2 0.0 1.732 0.0 a3 0.0 0.0 1.3727 &\nbasis 0.0 0.33333 0.0 &\nbasis 0.0 0.66667 0.0 &\nbasis 0.5 0.16667 0.0 &\nbasis 0.5 0.83333 0.0\n\n# Create a region to fill graphene atoms\nregion Gp cylinder z 0 0 30 0 3 units box\ncreate_atoms 2 region Gp\n\n# Set atomic masses\nmass 1 58.7\nmass 2 12.0\n\nwrite_data ni.xyz",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of NiTi alloy using LAMMPS.",
+        "input": "Modeling process:\n(1)Use the lattice custom command to generate a square box, set the basis parameter to determine the atomic positions. The corner atom coordinates are (0,0,0), and the center atom coordinates are (0.5, 0.5, 0.5).\n(2)Use create_atoms and basis to specify the corner atom type as 2 and the center atom type as 1.\n(3)Determine that 1 is a Ni atom and 2 is a Ti atom through mass.",
+        "output": "# NiTi modeling\nlattice custom 3.01 a1 1 0 0 a2 0 1 0 a3 0 0 1 &\n            basis 0 0 0 &\n            basis 0.5 0.5 0.5\nregion box block 0.0 10.0 0.0 10.0 0.0 10.0\ncreate_box 2 box\ncreate_atoms 1 box basis 1 2 basis 2 1\nmass 1 58.693 # Ni\nmass 2 47.867 # Ti\nwrite_data NiTi.xyz",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of Cu twinning using LAMMPS.",
+        "input": "",
+        "output": "units metal\nboundary p p p\natom_style atomic\ntimestep 0.001\nneighbor 2.0 bin\nneigh_modify delay 0 every 5 check yes\n# Create box\nlattice fcc 3.61 orient x 1 1 -2 orient y 1 1 1 orient z 1 -1 0  \nregion box block 0 10 0 10 0 10\ncreate_box 2 box\n# Create upper Cu\nlattice fcc 3.61 origin 0.6 0.5 0  orient x 1 1 -2 orient y 1 1 1 orient z 1 -1 0 \nregion upper block 0 10 0 5 0 10\ncreate_atoms 1 region upper\ngroup upper region upper\n# Create lower Cu\nlattice fcc 3.61  origin 0 0.2 0 orient x -1 -1 2 orient y 1 1 1 orient z -1 1 0\nregion lower block 0 10 5 10 0 10\ncreate_atoms 2 region lower\ngroup lower region lower\n# Set molar masses\nmass 1 63.55\nmass 2 63.55\n# Save model\nwrite_data Cu.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of NiTi alloy using LAMMPS and divide into three working areas.",
+        "input": "Method:\n(1)Divide into three regions.\n(2)Use the create_atoms command to fill different types of atoms in these three regions, respectively.",
+        "output": "units metal\natom_style atomic\n# NiTi modeling\nlattice custom 3.01 a1 1 0 0 a2 0 1 0 a3 0 0 1 &\nbasis 0 0 0 &\nbasis 0.5 0.5 0.5\nregion box block 0 30 0 3 0 20\ncreate_box 6 box\n# Layering\nregion fixed_layer block INF INF INF INF INF 4\nregion temp_layer block INF INF INF INF 4 16\nregion newton_layer block INF INF INF INF 16 INF\n# Fill atoms in the three layers\ncreate_atoms 1 region fixed_layer basis 1 2 basis 2 1\ncreate_atoms 1 region temp_layer basis 1 4 basis 2 3\ncreate_atoms 1 region newton_layer basis 1 6 basis 2 5\nmass 1 58.693 # Ni\nmass 2 47.867 # Ti\nmass 3 58.693 # Ni\nmass 4 47.867 # Ti\nmass 5 58.693 # Ni\nmass 6 47.867 # Ti\nwrite_data NiTi.xyz",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of an Al spherical shell model using LAMMPS, with an Al sphere at the core and an outer Al spherical shell.",
+        "input": "",
+        "output": "units metal\natom_style atomic\nboundary p p p\nlattice fcc 4.05\nregion box block -20 20 -20 20 -20 20 \ncreate_box 2 box\n# Create a spherical shell region\nregion ball1 sphere 0 0 0 70 units box\nregion ball2 sphere 0 0 0 60 side out units box\nregion shell intersect 2 ball1 ball2\n# Create an inner core region\nregion ball_in sphere 0 0 0 60 units box\n# Fill atoms\ncreate_atoms 2 region ball_in\ncreate_atoms 1 region shell\n# Save file\nmass * 27\nwrite_data Al.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a water sphere model using LAMMPS.",
+        "input": "",
+        "output": "units real\natom_style full\n# Create box\nregion box block -20 20 -20 20 -20 20 units box\n# Number of atoms, bonds, angles, etc., inside the box\ncreate_box 2 box bond/types 1 angle/types 1 extra/bond/per/atom 2 &\nextra/special/per/atom 2 extra/angle/per/atom 1\n# Lattice for H2O, adjustable lattice dimensions to control the number of water molecules or water density\nlattice bcc 3.92\n# Define the region\nregion H2O sphere 0 0 0 18 units box\n# Set the molecular template id to water, corresponding to the file water.data\nmolecule water water.data\n# Fill the spherical region with water molecules\ncreate_atoms 0 region H2O mol water 3453 units box\n# Set atomic molar masses\nmass 1 16\nmass 2 1\n# Save the model file\nwrite_data H2O.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of graphene desalinating seawater using LAMMPS.",
+        "input": "",
+        "output": "# Model basic parameters\nunits real\natom_style full\nboundary p p p\n# Custom graphene lattice\nlattice custom 2.4768 a1 1.3727 0.0 0.0 a2 0.0 1 0.0 a3 0.0 0.0 1.732 &\nbasis 0.0 0.0 0.33333 &\nbasis 0.0 0.0 0.66667 &\nbasis 0.0 0.5 0.16667 &\nbasis 0.0 0.5 0.83333\n# Define box dimensions\nregion box block 0 45 0 25 0 20\n# Create box\ncreate_box 5 box bond/types 1 angle/types 1 extra/bond/per/atom 2 &\nextra/angle/per/atom 1 extra/special/per/atom 2\n# Fill graphene atoms\nregion graphene block 90 100 INF INF INF INF units box\ncreate_atoms 5 region graphene\n# Create seawater region\nregion water_region block 2 88 INF INF INF INF units box\n# Define TIP4P water molecule\nmolecule water TIP4P.txt\n# Fill water molecules, number of water molecules is 8000\ncreate_atoms 0 random 8000 9090 water_region mol water 9567 units box\n# Randomly fill Na atoms, number 800\ncreate_atoms 3 random 800 8989 water_region\n# Set Na charge, Na atom becomes Na+\nset type 3 charge 1.0\n# Randomly fill Cl atoms, number 800\ncreate_atoms 4 random 800 8900 water_region\n# Set Cl charge, Cl->Cl-\nset type 4 charge -1.0\n# Set molar masses\nmass 1 15.9994\nmass 2 1.008\nmass 3 28.990\nmass 4 35.453\nmass 5 12\n# Save trajectory file\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of Al atom segregation at Cu grain boundaries using LAMMPS.",
+        "input": "",
+        "output": "# Create upper Cu\nlattice fcc 3.61 origin 0.6 0.5 0 orient x 1 1 -2 orient y 1 1 1 orient z 1 -1 0 \nregion upper block 0 100 0 25 0 20 units box\ncreate_atoms 1 region upper\n# Create lower Cu\nlattice fcc 3.61 origin 0 0.2 0 orient x -1 -1 2 orient y 1 1 1 orient z -1 1 0\nregion lower block 0 100 25 50 0 20 units box\n# Define grain boundary region\ncreate_atoms 1 region lower\nregion mid block INF INF 18 32 INF INF units box\ngroup mid region mid\n# Replace atoms in the grain boundary region\nset group mid type 3\nset type 3 type/fraction 2 0.3 23985\n# Restore grain boundary atom types\ngroup new3 type 3\nset group new3 type 1",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of an inclined conical cutting tool using LAMMPS.",
+        "input": "",
+        "output": "# Create lower cone\nregion c1 cone z 0 0 0 30 0 30 units box\ncreate_atoms 1 region c1\n# Create upper cylinder\nregion c2 cylinder z 0 0 30 30 60 units box\ncreate_atoms 1 region c2\n# Rotate the model\ngroup tool type 1\ndisplace_atoms tool rotate 0 0 0 0 1 0 -25\nwrite_data out.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a rounded cutting tool using LAMMPS.",
+        "input": "Method:\n(1)Create a rounded region.\n(2)Create an upper rectangular region.\n(3)Create a lower rectangular region.\n(4)Merge the three regions together.",
+        "output": "units              metal\natom_style          atomic\ndimension           3\nboundary            p p p \n\nregion box block 0 50 0 10 0 50 units box\ncreate_box 1 box\n\nregion r1 cylinder y  15  15  15 0 10 units box \nregion r2 block    15 50 0 10 0 15 units box\nregion r3 block    0 50 0 10 15 50  units box\n\nregion tool union 3 r1 r2 r3 units box                                                          \nlattice diamond 3.57                                                                               \ncreate_atoms  1 region tool units box                                                               \nmass * 12\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a triangular cutting tool using LAMMPS.",
+        "input": "",
+        "output": "units metal\natom_style atomic\ndimension 3\nboundary p p p\n# Box\nregion box block 0 100 0 10 0 100 units box\ncreate_box 1 box\n# Plane settings\nregion p1 plane 0 0 0 1 0 -1 units box\nregion p2 plane 20 0 20 0 0 1 units box\nregion p3 plane 80 0 20 -1 0 0 units box\nregion tool intersect 3 p1 p2 p3\n# Fill atoms\nlattice diamond 3.57\ncreate_atoms 1 region tool units box\nmass * 12\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of amorphous SiO2 using LAMMPS.",
+        "input": "The sio2.data model file is considered known.",
+        "output": "units metal\natom_style atomic\nboundary p p p\ntimestep 0.001\nneighbor 2 bin\nneigh_modify every 1 delay 0 check yes\n# Read data file\nread_data sio2.data\n# Potential function settings\npair_style tersoff\npair_coeff * * SiO.tersoff O Si\n# Temperature initialization\nvelocity all create 7000 98989\n# High-temperature relaxation\ndump 1 all atom 1000 dump.xyz\nfix 1 all npt temp 7000 7000 0.1 iso 100 100 1\nrun 50000\nunfix 1\n# Cooling\nfix 1 all npt temp 7000 300 0.1 iso 1 1 1\nrun 50000\nunfix 1\n# 300K relaxation\nfix 1 all nvt temp 300 300 0.1\nrun 50000\n# Save amorphous file\nwrite_data sio2_a.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a CO2 molecular model using LAMMPS.",
+        "input": "Create a box and randomly add 400 CO2 molecules.",
+        "output": "# Model basic parameters\nunits real\natom_style full\nboundary p p p\n\n# Define the simulation box\nregion box block 0 60 0 10 0 30 units box\ncreate_box 2 box bond/types 1 angle/types 1 extra/bond/per/atom 2 extra/angle/per/atom 1 extra/special/per/atom 2\n\n# Define the CO2 molecule\nmolecule CO2 CO2.txt\n# Create CO2 molecules randomly within the box\ncreate_atoms 0 random 400 9090 box mol CO2 9567 units box\n\n# Set atomic masses\nmass 1 12\nmass 2 15.9994\n\n# Save the simulation data\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a 1D sinusoidal rough interface using LAMMPS.",
+        "input": "",
+        "output": "dimension       3\nunits           metal\natom_style      atomic\nvariable        x equal 40\nvariable        y equal 25\nlattice         fcc 3.61\nregion          box block 0 $x 0 $y 0 20\ncreate_box      1 box\nvariable        xx internal 0.0\nvariable        zz internal 0.0\nvariable        v equal \"v_zz < (8 * sin(v_xx * 2.0*PI/30) +30 ) \"\ncreate_atoms    1 box var v set x xx set z zz\nwrite_dump      all atom all.xyz",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a 2D sinusoidal rough interface using LAMMPS.",
+        "input": "",
+        "output": "dimension       3\nunits           metal\natom_style      atomic\nvariable        x equal 40\nvariable        y equal 25\nlattice         fcc 3.61\nregion          box block 0 $x 0 $y 0 20\ncreate_box      1 box\nvariable        xx internal 0.0\nvariable        yy internal 0.0\nvariable        zz internal 0.0\nvariable        v equal \"v_zz < (15 * sin(v_xx * 2.0*PI/50)*sin(v_yy * 2.0*PI/50) +30 ) \"\ncreate_atoms    1 box var v set x xx set y yy set z zz\nwrite_dump      all atom all.xyz",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Use LAMMPS for modeling, with the upper part being Si, the lower part being Cu, and a mixed Si/Cu region at the interface, reserving a crack in the mixed region.",
+        "input": "",
+        "output": "units metal\nboundary p p p\natom_style atomic\ntimestep 0.001\nneighbor 2 bin\nneigh_modify every 1 delay 0 check yes\n# Box\nregion box block 0 100 0 20 0 60 units box\ncreate_box 2 box\n# Bottom Cu modeling\nlattice fcc 3.61\nregion cu block INF INF INF INF INF 25 units box\ncreate_atoms 1 region cu\n# Top Si modeling\nlattice diamond 5.43\nregion si block INF INF INF INF 25 INF units box \ncreate_atoms 2 region si\n# Middle region modeling\nregion middle block INF INF INF INF 25 35 units box\ncreate_atoms 1 random 1500 9899 middle\ncreate_atoms 2 random 1500 68678 middle\n# Crack\nregion crack block 35 65 INF INF 28 32 units box\ndelete_atoms region crack\nmass 1 64\nmass 2 28\n# Potential function settings\npair_style hybrid eam/fs tersoff lj/cut 10\npair_coeff * * eam/fs Cu1.eam.fs Cu NULL\npair_coeff * * tersoff SiC.tersoff NULL Si\npair_coeff 1 2 lj/cut 0.0846  2.99\n# Save model\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of hcp-type Mg using LAMMPS.",
+        "input": "The official default parameter requires a custom lattice constant.",
+        "output": "units metal\ndimension 3\nboundary p p p\n# Custom hcp lattice\n# a1: c\n# a3: c/a\nvariable a equal 3.2\nvariable c equal 1.6235\nlattice custom ${a} a1 1.0 0.0 0.0 a2 0.0 1.732 0.0 a3 0.0 0.0 ${c} &\nbasis 0.0 0.0 0.0 &\nbasis 0.5 0.5 0.0 &\nbasis 0.5 0.83333 0.5 &\nbasis 0.0 0.33333 0.5\n\nregion box block 0 10 0 10 0 10\ncreate_box 1 box\ncreate_atoms 1 box\nmass 1 24\nwrite_data Mg.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Rotate GaN along the x-axis by 90 degrees using LAMMPS.",
+        "input": "The GaN.data model file is considered known.",
+        "output": "units metal\natom_style atomic\nboundary s s s\nread_data GaN.data\n# Calculate the center of mass\nvariable x0 equal xcm(all,x)\nvariable y0 equal xcm(all,y)\nvariable z0 equal xcm(all,z)\n# Rotate by 90 degrees\ndisplace_atoms all rotate ${x0} ${y0} ${z0} 1 0 0 90\n# Save the new model\nwrite_data new.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a rough interface using LAMMPS.",
+        "input": "Build the smallest periodic unit and use the array command to replicate it.",
+        "output": "units metal\nboundary p p p\natom_style atomic\n# Create box\nlattice fcc 3.61\nregion box block 0 10 0 10 0 20\ncreate_box 1 box\n# Bottom Cu region\nregion bottom block INF INF INF INF INF 30 units box\n# Cylinder dim c1 c2 radius lo hi\nregion cy cylinder z 18 18 12 30 40 units box \n# Merge the cylinder region with the Cu region\nregion Cu union 2 bottom cy\n# Generate Cu atoms\ncreate_atoms 1 region Cu\n# Replicate\nreplicate 6 3 1\n# Save model\nmass 1 64\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a fluid model using LAMMPS, with upper and lower walls being Al atoms and the fluid being a NaCl solution (including water molecules, Na+, and Cl-).",
+        "input": "",
+        "output": "# Model parameters\nunits real\natom_style full\nbond_style harmonic\nangle_style harmonic\npair_style lj/cut/tip4p/long 1 2 1 1 0.1546 12.0\nkspace_style pppm/tip4p 1.0e-4\n# Modeling\nlattice fcc 4.04\nregion box block -15 15 -4 4 -9 9\ncreate_box 5 box &\n           bond/types 1 &\n           angle/types 1 &\n           extra/bond/per/atom 2 &\n           extra/angle/per/atom 1 &\n           extra/special/per/atom 2\n# Set top and bottom walls\nregion rbotwall block -15 15 -4 4 -8 -6\nregion rtopwall block -15 15 -4 4 6 8\nregion rwall union 2 rbotwall rtopwall\ncreate_atoms 5 region rwall\n# Add water molecules in a lattice manner\nregion rliquid block -15 15 -4 4 -5 5\nmolecule h2omol TIP4P2005.txt\nlattice sc 4.04\ncreate_atoms 0 region rliquid mol h2omol 482793\n# Randomly add Na+ and Cl- ions\nfix mydep1 all deposit 20 3 1 56513 region rliquid near 0.3\nfix mydep2 all deposit 20 4 1 58613 region rliquid near 0.3\n# Molar masses\nmass 1 16 # O\nmass 2 1 # H\nmass 3 23 # Na+\nmass 4 35 # Cl-\nmass 5 27 # Al\n# Force field parameter settings\npair_coeff 1 1 0.185199 3.1589 # O\npair_coeff 2 2 0.0 0.0 # H\npair_coeff 3 3 0.04690 2.4299 # Na+\npair_coeff 4 4 0.1500 4.04470 # Cl-\npair_coeff 5 5 11.697 2.574 # Al\nbond_coeff 1 0 0.9572 # O-H\nangle_coeff 1 0 104.52 # H-O-H\n# Charges\nset type 3 charge 1.0\nset type 4 charge -1.0\n# Run for 20 steps\nrun 20\n# Save data file\nwrite_data system.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a semi-ellipsoidal indentation model using LAMMPS.",
+        "input": "",
+        "output": "atom_style atomic\nboundary p p p\nunits metal\n\nlattice fcc 3.61\nregion box block -20 20 -13 13 -25 2\ncreate_box 4 box\n\nregion b1 block INF INF INF INF INF -23\nregion b2 block INF INF INF INF -23 -19\nregion b3 block INF INF INF INF -19 -10\ncreate_atoms 1 region b1\ncreate_atoms 2 region b2\ncreate_atoms 3 region b3\n\nregion bot ellipsoid 0 0 0 15 15 30 units box\nregion top block INF INF INF INF -35 0 units box\nregion ellipsoid intersect 2 bot top\ncreate_atoms 4 region ellipsoid\n\nmass 1 64\nmass 2 64\nmass 3 64\nmass 4 12\n\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a graphene sheet using LAMMPS, and perform a rotation, with the rotation angle being 45 degrees.",
+        "input": "",
+        "output": "atom_style atomic\nboundary s s s\nunits metal\nlattice custom 2.4768 a1 1.0 0.0 0.0 a2 0.0 1.732 0.0 a3 0.0 0.0 1.3727 &\nbasis 0.0 0.33333 0.0 &\nbasis 0.0 0.66667 0.0 &\nbasis 0.5 0.16667 0.0 &\nbasis 0.5 0.83333 0.0\nregion box block 0 4 0 4 0 0.8\ncreate_box 1 box\ncreate_atoms        1 box\nmass 1 12\ndisplace_atoms all rotate 0 0 0 1 0 0 45\nwrite_data gp.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a copper crystal block using LAMMPS.",
+        "input": "",
+        "output": "atom_style atomic\nboundary p p p\nunits metal\nlattice fcc 3.61\nregion box block 0 10 0 10 0 8\ncreate_box 1 box\ncreate_atoms        1 box\nmass 1 64\nwrite_data cu.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of randomly inserting graphene sheets into a Cu-based body using LAMMPS.",
+        "input": "The cu.data and gp.data two model files are considered known.",
+        "output": "atom_style atomic\nboundary p p p\nunits metal\n# Generate three random numbers\nvariable dx1 equal floor(random(1,20,5989))\nvariable dy1 equal floor(random(1,20,456))\nvariable dz1 equal floor(random(1,20,289))\nvariable dx equal ${dx1}\nvariable dy equal ${dy1}\nvariable dz equal ${dz1}\nread_data cu.data extra/atom/types 1\n# Use the shift command to randomly adjust the position of graphene\nread_data gp.data add append offset 1 0 0 0 0 shift ${dx} ${dy} ${dz} \npair_style hybrid lj/cut 10 eam/fs airebo 3.0\npair_coeff * * eam/fs Cu1.eam.fs Cu NULL\npair_coeff * * airebo CH.airebo NULL C\npair_coeff 1 2 lj/cut 0.01996 3.225\ngroup cu type 1\ngroup gp type 2\n# Delete overlapping atoms\ndelete_atoms overlap 2 cu gp\nwrite_data cugp.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Add 60 TIP5P water molecules to the system using LAMMPS.",
+        "input": "",
+        "output": "units real\natom_style charge\natom_modify map array\nregion box block -10 10 -5 5 -5 5\ncreate_box 3 box\nmass 1 15.9994\nmass 2 1.008\nmass 3 1.0e-100\npair_style lj/cut/coul/cut 8.0\npair_coeff 1 1 0.160  3.12\npair_coeff 2 2 0.0    1.0\npair_coeff 3 3 0.0    1.0\nfix mol all property/atom mol\nmolecule water tip5p.mol\ncreate_atoms 0 random 50 34564 NULL mol water 25367 overlap 1.33\ntimestep 0.5\ndump 1 all atom 100 dump.xyz\nfix integrate all rigid/nvt/small molecule temp 300.0 300.0 100.0\nreset_timestep 0\nvelocity all create 300.0 5463576\nthermo_style custom step temp press etotal density pe ke\nthermo 1000\nrun 20000",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of amorphous Cu using LAMMPS.",
+        "input": "",
+        "output": "# Model parameter settings\nunits metal\ndimension 3\nboundary p p p\ntimestep 0.001\natom_style full\nneighbor 2.0 bin\nneigh_modify delay 0 every 1 check yes\nlattice fcc 3.61\nregion box block -20 20 -20 20 -20 20\ncreate_box 1 box\ncreate_atoms 1 box\npair_style eam/fs\npair_coeff * * Cu1.eam.fs Cu\nvelocity all create 300 90876\nfix 1 all nvt temp 300 2500 0.1 #iso 0 0 1\nrun 10000\nunfix 1\nreset_timestep 0\nfix 1 all nvt temp 2500 300 0.1 #iso 0 0 1\nrun 1000\nwrite_data cu1.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of adding crystalline Cu spheres into amorphous Cu using LAMMPS.",
+        "input": "The cu1.data model file is considered known.",
+        "output": "units      metal  \ndimension    3\nboundary    p p p\ntimestep    0.001\natom_style    full\nneighbor    2.0 bin\nneigh_modify  delay 0 every 1 check yes\nread_data cu1.data\npair_style     eam/fs\npair_coeff      * * Cu1.eam.fs Cu\nlattice fcc 3.61\nregion del sphere 0 0 0 10\ndelete_atoms region del\ncreate_atoms 1 region del\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Use LAMMPS for modeling, with a water sphere in the middle of the model and CO2 gas outside the water sphere.",
+        "input": "",
+        "output": "units      real\nboundary   p p p \natom_style full\ntimestep   1\nneighbor   2 bin\nneigh_modify  every 1 delay 0 check yes\n\nregion box block -30 30 -15 15 -30 30 units box\ncreate_box 4 box &\nbond/types 2 &\nangle/types 2 &\nextra/bond/per/atom 2 &\nextra/angle/per/atom 1 &\nextra/special/per/atom 2\n\nregion water sphere 0 0 0 15 units box\nmolecule water TIP4P2005.txt \ncreate_atoms 0 random 800 1235 water mol water 9658 units box\n\nregion water_out sphere 0 0 0 15 side out units box\nregion CO2 intersect 2 water_out box\nmolecule CO2 CO2.txt toff 2 boff 1 aoff 1\ncreate_atoms 0 random 2000 125 CO2 mol CO2 12965 units box\n\nmass 1 15.9994 # O\nmass 2 1.008   # H\nmass 3 12  # C\nmass 4 15.9994   # O \n\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of an acute-angled cutting tool using LAMMPS.",
+        "input": "Set three regions, use the intersection command to merge them into a closed area, and then generate atoms in this area.",
+        "output": "units              metal\natom_style          atomic\ndimension           3\nboundary            p p p\ntimestep            0.001\nneighbor            0.2 bin\n\nregion box block -50 50 -10 10 -20 50 units box\ncreate_box 1 box\nregion b block 0 30 -10 10 0 40 units box\nvariable x1 equal cos(PI*15/180)\nvariable z1 equal -sin(PI*15/180)  \nregion p1 plane 0 0 0 ${x1} 0 ${z1} side in units box\nvariable x2 equal -sin(PI*15/180)\nvariable z2 equal cos(PI*15/180)  \nregion p2 plane 0 0 0 ${x2} 0 ${z2} side in units box\nregion tool intersect 3 b p1 p2                                                                                                                                              \nlattice       diamond 3.567                                                                               \ncreate_atoms  1 region tool units box                                                                     \nmass 1 12\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a diamond triangular pyramid cutting tool using LAMMPS.",
+        "input": "Merge three slanted surfaces or three slanted surfaces plus a plane into a closed area, and generate atoms within the area.",
+        "output": "dimension 3\nboundary p p p\natom_style atomic\ntimestep 0.001\n# Modeling\nregion box block -60 60 -60 60 0 60 units box\ncreate_box 1 box\nlattice diamond 3.56\nregion 1 plane 0 0 0 2 -2 1 units box\nregion 2 plane 0 0 0 2 2 1 units box\nregion 3 plane 0 0 0 -2 0 1 units box\nregion tool intersect 3 1 2 3\ncreate_atoms 1 region tool\n# Set atomic masses\nmass 1 12\nwrite_data tool.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "Implement modeling of a hexagonal structure using LAMMPS.",
+        "input": "Use the region plane to set six faces, use these six faces to form a closed area, and generate atoms within the closed area.",
+        "output": "atom_style atomic\nunits metal\nboundary p p p\n# Outer circle radius\nvariable R equal 50\n# Create the box\nlattice fcc 3.61\nregion box block -20 20 -20 20 -40 40 \ncreate_box 1 box\n# Inclined plane 1\nvariable x1 equal cos(PI*30/180)\nvariable y1 equal sin(PI*30/180)  \nregion p1 plane $R 0 0 ${x1} ${y1} 0  side out units box\n# Inclined plane 2\nvariable x1 equal cos(PI*30/180)\nvariable y1 equal -sin(PI*30/180)  \nregion p2 plane -$R 0 0 ${x1} ${y1} 0  side in units box\n# Inclined plane 3\nvariable x1 equal -cos(PI*30/180)\nvariable y1 equal -sin(PI*30/180)  \nregion p3 plane -$R 0 0 ${x1} ${y1} 0  side out units box\n# Inclined plane 4\nvariable x1 equal -cos(PI*30/180)\nvariable y1 equal sin(PI*30/180)  \nregion p4 plane $R 0 0 ${x1} ${y1} 0  side in units box\n# Plane 1\nvariable y2 equal $R*cos(PI*30/180)\nregion p5 plane  0 ${y2} 0 0 -1 0  side in units box\n# Plane 2\nvariable y3 equal -$R*cos(PI*30/180)\nregion p6 plane  0 ${y3} 0 0 1 0  side in units box\n# Combine the 6 planes\nregion piece intersect 6 p1 p2 p3 p4 p5 p6\ncreate_atoms 1 region piece\nmass 1 64\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    }
+]

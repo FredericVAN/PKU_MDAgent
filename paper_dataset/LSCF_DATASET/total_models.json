@@ -1,0 +1,402 @@
+[
+    {
+        "instruction": "用lammps实现高熵合金AlCuFeMgSi的建模",
+        "input": "主要流程为：\n\n（1）确定大体的晶格结构，是fcc还是bcc，这些可通过查文献获得。\n\n（2）确定晶格常数，以合金元素中最大的晶格常数即可，也不是必须选择最大晶格常数，选择其它数也可以。晶格常数只是初始建模用，在弛豫后会获得准确的晶格常数值。\n\n（3）生成盒子box，在盒子中充满类型1的原子。\n\n（4）set type/ratio命令把类型1的原子按照比例随机选择原子，并将其转换为其他类型原子。",
+        "output": "#初始模拟系统设置\nunits         metal\nboundary      p p p\natom_style    atomic\ntimestep      0.001\n#构建模型\nlattice       fcc 3.56\nregion        box block 0 10 0 10 0 10 \ncreate_box    5 box\ncreate_atoms  1 box\n#将type为1的原子转换为其他原子\nset  type 1 type/ratio 2 0.2 87393\nset  type 1 type/ratio 3 0.5 87393\nset  type 1 type/ratio 4 0.5 87393\nset  type 3 type/ratio 5 0.5 87393\n#设置原子类型\nmass  1 27 #Al\nmass  2 56 #Fe\nmass  3 28 #Si\nmass  4 64 #Cu\nmass  5 24 #Mg\nwrite_data AlCuFeMgSi.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现一系列规则排列的纳米铜球的建模，实现阵列特征结构",
+        "input": "使用replicate命令可以创建超晶胞，也可以创建具有阵列特征的结构。",
+        "output": "lattice fcc 3.61\nregion Cu sphere 0 0 0 20 units box\ncreate_box 1 Cu\ncreate_atoms 1 region Cu\nreplicate 3 3 1\nmass 1 64\nwrite_data Cu.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现圆柱形Ni与石墨烯层复合材料的建模，在圆柱形Ni纳米柱中插入一层石墨烯",
+        "input": "",
+        "output": "#in文件基本参数设置\nunits      metal\nboundary    p p p\natom_style    atomic\n\n#沿着Z轴方向生成一个圆柱形的Ni纳米柱，圆柱旋转轴坐标（0,0）\n#半径为30，圆柱上下底在z轴坐标（-60,60），即圆柱高度为120\nregion      ni cylinder z 0 0 30 -60 60 units box\n#以region ni为基准生成模拟盒子，注意：模拟盒子为长方体，而不是圆柱体\ncreate_box    2 ni\n#设置Ni晶格参数，在region ni内填充Ni原子\nlattice      fcc 3.52\ncreate_atoms  1 region ni\n\n#删除中间Ni层\nregion        Ni_del block INF INF INF INF 0 3 units box\ndelete_atoms    region Ni_del\n\n#生成Graphen层\nlattice custom 2.4768 a1 1.0 0.0 0.0 a2 0.0 1.732 0.0 a3 0.0 0.0 1.3727 &\nbasis 0.0 0.33333 0.0 &\nbasis 0.0 0.66667 0.0 &\nbasis 0.5 0.16667 0.0 &\nbasis 0.5 0.83333 0.0\n\n#生成一个region，用以填充石墨烯原子\nregion          Gp cylinder z 0 0 30 0 3 units box\ncreate_atoms    2 region Gp\n\n#设定原子质量\nmass        1 58.7\nmass        2 12.0\n\nwrite_data     ni.xyz",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现NiTi合金的建模",
+        "input": "建模过程：\n（1）使用lattice custom命令生成一个正方形盒子，设置basis参数，确定原子位置。顶角原子坐标（0，0，0），中心原子坐标（0.5，0.5，0.5）。（2）使用create_atoms 和basis指定顶角原子类型为2，中心原子类型为1。（3）通过mass确定1为Ni原子，2为Ti原子。",
+        "output": "#NiTi建模\nlattice    custom 3.01 a1 1 0 0 a2 0 1 0 a3 0 0 1 &\n            basis 0 0 0 &\n            basis 0.5 0.5 0.5\nregion      box block 0.0 10.0 0.0 10.0 0.0 10.0\ncreate_box  2 box\ncreate_atoms 1 box basis 1 2 basis 2 1\nmass 1 58.693     #Ni\nmass 2 47.867      #Ti\nwrite_data  NiTi.xyz",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现Cu孪晶的建模",
+        "input": "",
+        "output": "units      metal\nboundary    p p p\natom_style    atomic\ntimestep    0.001\nneighbor    2.0 bin\nneigh_modify  delay 0 every 5 check yes\n#创建box\nlattice fcc 3.61 orient x 1 1 -2 orient y 1 1 1 orient z 1 -1 0  \nregion      box block 0 10 0 10 0 10\ncreate_box     2 box\n#创建上部Cu\nlattice  fcc 3.61 origin 0.6 0.5 0  orient x 1 1 -2 orient y 1 1 1 orient z 1 -1 0 \nregion      upper block 0 10 0 5 0 10\ncreate_atoms  1 region upper\ngroup      upper region upper\n#创建下部Cu\nlattice fcc 3.61  origin 0 0.2 0 orient x -1 -1 2 orient y 1 1 1 orient z -1 1 0\nregion      lower block 0 10 5 10 0 10\ncreate_atoms  2 region lower\ngroup      lower region lower\n#设置摩尔质量\nmass      1 63.55\nmass      2 63.55\n#保存模型\nwrite_data    Cu.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现NiTi合金的建模并划分三个工作区域",
+        "input": "方法：（1）划分三个区域\n\n（2）分别在这个三个区域内使用create_atoms命令填充不同类型的原子",
+        "output": "units           metal\natom_style      atomic\n#NiTi建模\nlattice    custom 3.01 a1 1 0 0 a2 0 1 0 a3 0 0 1 &\nbasis 0 0 0 &\nbasis 0.5 0.5 0.5\nregion      box block 0 30 0 3 0 20\ncreate_box  6 box\n#分层\nregion      fixed_layer block INF INF INF INF INF 4\nregion      temp_layer block INF INF INF INF 4 16\nregion      newton_layer block INF INF INF INF 16 INF\n#在三个层内填充原子\ncreate_atoms 1 region fixed_layer basis 1 2 basis 2 1\ncreate_atoms 1 region temp_layer basis 1 4 basis 2 3\ncreate_atoms 1 region newton_layer basis 1 6 basis 2 5\nmass 1 58.693     #Ni\nmass 2 47.867      #Ti\nmass 3 58.693     #Ni\nmass 4 47.867      #Ti\nmass 5 58.693     #Ni\nmass 6 47.867      #Ti\nwrite_data  NiTi.xyz",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现Al球壳模型的建模，内核为Al球体，外面包裹一层Al球壳",
+        "input": "",
+        "output": "units   metal\natom_style atomic\nboundary    p p p\nlattice fcc 4.05\nregion box block -20 20 -20 20 -20 20 \ncreate_box 2 box\n#创建球壳区域\nregion ball1 sphere 0 0 0 70 units box\nregion ball2 sphere 0 0 0 60 side out units box\nregion shell intersect 2 ball1 ball2\n#创建内核区域\nregion ball_in sphere 0 0 0 60 units box\n#填充原子\ncreate_atoms 2 region ball_in\ncreate_atoms 1 region shell\n#保存文件\nmass    * 27\nwrite_data Al.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现水球模型的建模",
+        "input": "",
+        "output": "units real\natom_style full\n#创建box\nregion box block -20 20 -20 20 -20 20 units box\n#box内原子数量、键、角等信息\ncreate_box 2 box bond/types 1 angle/types 1 extra/bond/per/atom 2 &\nextra/special/per/atom 2 extra/angle/per/atom 1\n#H2O的晶格，可调节晶格尺寸控制水分子数量或水的密度\nlattice         bcc 3.92\n#设定区域\nregion          H2O sphere 0 0 0 18 units box\n#设定分子模板id为water，对应文件water.data\nmolecule        water water.data\n#在球形区域内填充水分子\ncreate_atoms    0 region H2O mol water 3453 units box\n#设置原子摩尔质量\nmass                1 16\nmass                2 1\n#保存模型文件\nwrite_data          H2O.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现用石墨烯淡化海水的建模",
+        "input": "",
+        "output": "#模型基本参数\nunits       real\natom_style  full\nboundary    p p p\n#自定义石墨烯晶格\nlattice custom 2.4768 a1 1.3727 0.0 0.0 a2 0.0 1 0.0 a3 0.0 0.0 1.732 &\nbasis 0.0 0.0 0.33333 &\nbasis 0.0 0.0 0.66667 &\nbasis 0.0 0.5 0.16667 &\nbasis 0.0 0.5 0.83333\n#定义box尺寸\nregion      box block 0 45 0 25 0 20\n#创建box\ncreate_box  5 box bond/types 1 angle/types 1 extra/bond/per/atom 2 &\nextra/angle/per/atom 1 extra/special/per/atom 2\n#填充石墨烯原子\nregion graphene block 90 100 INF INF INF INF units box\ncreate_atoms  5 region graphene\n#创建海水区域\nregion  water_region block 2 88 INF INF INF INF units box\n#定义TIP4P水分子\nmolecule    water TIP4P.txt\n#填充水分子，水分子个数8000\ncreate_atoms    0 random 8000 9090 water_region mol water 9567 units box\n#随机填充Na原子，个数800个\ncreate_atoms    3 random 800 8989 water_region\n#设置Na电荷，Na原子变为Na+\nset type 3 charge 1.0\n#随机填充Cl原子，个数800个\ncreate_atoms    4 random 800 8900 water_region\n#设置Cl电荷，Cl->Cl-\nset         type 4 charge -1.0\n#设置摩尔质量\nmass        1 15.9994\nmass        2 1.008\nmass        3 28.990\nmass        4 35.453\nmass        5 12\n#保存轨迹文件\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现Cu晶界偏析Al原子的建模",
+        "input": "",
+        "output": "#创建上部Cu\nlattice  fcc 3.61 origin 0.6 0.5 0  orient x 1 1 -2 orient y 1 1 1 orient z 1 -1 0 \nregion      upper block 0 100 0 25 0 20 units box\ncreate_atoms  1 region upper\n#创建下部Cu\nlattice fcc 3.61  origin 0 0.2 0 orient x -1 -1 2 orient y 1 1 1 orient z -1 1 0\nregion      lower block 0 100 25 50 0 20 units box\n#设定晶界区域\ncreate_atoms  1 region lower\nregion mid block INF INF 18 32 INF INF  units box\ngroup mid region mid\n#在晶界区域替换原子\nset group mid type 3\nset type 3 type/fraction 2  0.3  23985\n#晶界原子类型复原\ngroup new3 type 3\nset group new3 type 1",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现倾斜圆锥刀具的建模",
+        "input": "",
+        "output": "#建立下部圆锥\nregion        c1 cone z 0 0 0 30 0 30 units box\ncreate_atoms  1 region c1\n#建立上部圆柱\nregion        c2 cylinder z 0 0 30 30 60 units box\ncreate_atoms  1 region c2\n#旋转模型\ngroup   tool type 1\ndisplace_atoms tool rotate 0 0 0 0 1 0 -25\nwrite_data out.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现圆角刀具的建模",
+        "input": "方法：\n（1）创建圆角区域\n（2）创建上部矩形区域\n（3）创建下部矩形区域\n（4）3个区域合并到一起",
+        "output": "units              metal\natom_style          atomic\ndimension           3\nboundary            p p p \n\nregion box block 0 50 0 10 0 50 units box\ncreate_box 1 box\n\nregion r1 cylinder y  15  15  15 0 10 units box \nregion r2 block    15 50 0 10 0 15 units box\nregion r3 block    0 50 0 10 15 50  units box\n\nregion tool union 3 r1 r2 r3 units box                                                          \nlattice diamond 3.57                                                                               \ncreate_atoms  1 region tool units box                                                               \nmass * 12\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现三角形刀具的建模",
+        "input": "",
+        "output": "units              metal\natom_style          atomic\ndimension           3\nboundary            p p p \n#box\nregion box block 0 100 0 10 0 100 units box\ncreate_box 1 box\n#平面设置\nregion p1 plane 0 0 0 1 0 -1 units box\nregion p2 plane 20 0 20 0 0 1 units box\nregion p3 plane 80 0 20 -1 0 0 units box\nregion tool intersect 3 p1 p2 p3\n#填充原子                                                           \nlattice       diamond 3.57                                                                               \ncreate_atoms  1 region tool units box                                                              \nmass * 12\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现非晶SiO2的建模",
+        "input": "sio2.data模型文件当作已知。",
+        "output": "units           metal\natom_style      atomic\nboundary        p p p\ntimestep        0.001\nneighbor        2 bin \nneigh_modify    every 1 delay 0 check yes\n#读取data文件\nread_data       sio2.data\n#势函数设置\npair_style      tersoff\npair_coeff      * * SiO.tersoff O Si\n#温度初始化\nvelocity all create 7000 98989\n#高温弛豫\ndump 1 all atom 1000 dump.xyz\nfix 1 all npt temp 7000 7000 0.1 iso 100 100 1\nrun 50000\nunfix 1\n#降温\nfix 1 all npt temp 7000 300 0.1 iso 1 1 1\nrun 50000\nunfix 1\n#300K弛豫\nfix 1 all nvt temp 300 300 0.1 \nrun 50000\n#保存非晶文件\nwrite_data sio2_a.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现CO2分子模型的建模",
+        "input": "创建盒子，随机添加400个CO2分子",
+        "output": "#模型基本参数\nunits       real\natom_style  full\nboundary    p p p\n\nregion      box block 0 60 0 10 0 30 units box\ncreate_box  2 box bond/types 1 angle/types 1 extra/bond/per/atom 2 extra/angle/per/atom 1 extra/special/per/atom 2\n\nmolecule    CO2 CO2.txt\ncreate_atoms    0 random 400 9090 box mol CO2 9567 units box\n\nmass        1 12\nmass        2 15.9994\n\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现1D正弦粗糙界面的建模",
+        "input": "",
+        "output": "dimension       3\nunits           metal\natom_style      atomic\nvariable        x equal 40\nvariable        y equal 25\nlattice         fcc 3.61\nregion          box block 0 $x 0 $y 0 20\ncreate_box      1 box\nvariable        xx internal 0.0\nvariable        zz internal 0.0\nvariable        v equal \"v_zz < (8 * sin(v_xx * 2.0*PI/30) +30 ) \"\ncreate_atoms    1 box var v set x xx set z zz\nwrite_dump      all atom all.xyz",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现2D正弦粗糙界面的建模",
+        "input": "",
+        "output": "dimension       3\nunits           metal\natom_style      atomic\nvariable        x equal 40\nvariable        y equal 25\nlattice         fcc 3.61\nregion          box block 0 $x 0 $y 0 20\ncreate_box      1 box\nvariable        xx internal 0.0\nvariable        yy internal 0.0\nvariable        zz internal 0.0\nvariable        v equal \"v_zz < (15 * sin(v_xx * 2.0*PI/50)*sin(v_yy * 2.0*PI/50) +30 ) \"\ncreate_atoms    1 box var v set x xx set y yy set z zz\nwrite_dump      all atom all.xyz",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps进行建模，上部为Si，下部为Cu，界面处为Si/Cu混合区域，混合区域预留一个裂纹。",
+        "input": "",
+        "output": "units           metal\nboundary        p p p\natom_style      atomic\ntimestep        0.001\nneighbor        2 bin\nneigh_modify    every 1 delay 0 check yes\n#box\nregion          box block 0 100 0 20 0 60 units box\ncreate_box      2 box\n#底部cu建模\nlattice         fcc 3.61\nregion          cu block INF INF INF INF INF 25 units box\ncreate_atoms    1 region cu\n#上部si建模\nlattice         diamond 5.43\nregion          si block INF INF INF INF 25 INF units box \ncreate_atoms    2 region si\n#中间区域建模\nregion          middle block INF INF INF INF 25 35 units box\ncreate_atoms    1 random 1500 9899 middle\ncreate_atoms    2 random 1500 68678 middle\n#裂纹\nregion          crack block 35 65 INF INF 28 32 units box\ndelete_atoms    region crack\nmass 1 64\nmass 2 28\n#势函数设置\npair_style      hybrid eam/fs tersoff lj/cut 10\npair_coeff      * * eam/fs Cu1.eam.fs Cu NULL\npair_coeff      * * tersoff SiC.tersoff NULL Si\npair_coeff      1 2 lj/cut 0.0846  2.99\n#保存模型\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现hcp类型的Mg的建模",
+        "input": "官方默认了一个参数，需要自定义晶格常数。",
+        "output": "units             metal\ndimension         3\nboundary          p p p\n#自定义hcp晶格\n#a1：c\n#a3:c/a\nvariable a equal 3.2\nvariable c equal 1.6235\nlattice custom ${a} a1 1.0 0.0 0.0 a2 0.0 1.732 0.0 a3 0.0 0.0 ${c} &\nbasis 0.0 0.0 0.0 &\nbasis 0.5 0.5 0.0 &\nbasis 0.5 0.83333 0.5 &\nbasis 0.0 0.33333 0.5\n\nregion            box block 0 10 0 10 0 10\ncreate_box        1 box\ncreate_atoms      1 box\nmass              1 24\nwrite_data        Mg.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps把GaN沿x轴旋转90度",
+        "input": "GaN.data模型文件当作已知",
+        "output": "units metal\natom_style atomic\nboundary s s s\nread_data GaN.data\n#计算重心\nvariable x0 equal xcm(all,x)\nvariable y0 equal xcm(all,y)\nvariable z0 equal xcm(all,z)\n#旋转90度\ndisplace_atoms all rotate ${x0} ${y0} ${z0} 1 0 0 90\n#保存新模型\nwrite_data new.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现粗糙界面的建模",
+        "input": "建出最小的周期单元，使用阵列命令进行复制。",
+        "output": "units metal\nboundary p p p\natom_style atomic\n#创建box\nlattice fcc 3.61\nregion box block 0 10 0 10 0 20\ncreate_box 1 box\n#底部cu区域\nregion botom block INF INF INF INF INF 30 units box\n# 圆柱dim c1 c2 radius lo hi\nregion cy cylinder z 18 18 12 30 40 units box \n#在Cu的区域合并圆柱区域\nregion Cu union 2 botom cy\n#生成Cu原子\ncreate_atoms 1 region Cu\n#阵列\nreplicate 6 3 1\n#保存模型\nmass                1 64\nwrite_data          all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现流体模型的建模，上下壁面为Al原子，流体为NaCl溶液（包含水分子、Na+和Cl-）",
+        "input": "",
+        "output": "#模型参数\nunits real\natom_style full\nbond_style harmonic\nangle_style harmonic\npair_style lj/cut/tip4p/long 1 2 1 1 0.1546 12.0\nkspace_style pppm/tip4p 1.0e-4\n#建模\nlattice fcc 4.04\nregion box block -15 15 -4 4 -9 9\ncreate_box 5 box &\n           bond/types 1 &\n           angle/types 1 &\n           extra/bond/per/atom 2 &\n           extra/angle/per/atom 1 &\n           extra/special/per/atom 2\n #设置上下壁面\nregion rbotwall block -15 15 -4 4 -8 -6\nregion rtopwall block -15 15 -4 4 6 8\nregion rwall union 2 rbotwall rtopwall\ncreate_atoms 5 region rwall\n#按晶格方式添加水分子\nregion rliquid block -15 15 -4 4 -5 5\nmolecule h2omol TIP4P2005.txt\nlattice sc 4.04\ncreate_atoms 0 region rliquid mol h2omol 482793\n#随机添加Na+和Cl-离子\nfix mydep1 all deposit 20 3 1 56513 region rliquid near 0.3\nfix mydep2 all deposit 20 4 1 58613 region rliquid near 0.3\n#摩尔质量\nmass 1 16 # O\nmass 2 1 # H\nmass 3 23 # Na+\nmass 4 35 # Cl-\nmass 5 27 # Al\n#力场参数设置\npair_coeff 1 1 0.185199 3.1589 # O\npair_coeff 2 2 0.0 0.0 # H\npair_coeff 3 3 0.04690 2.4299 # Na+\npair_coeff 4 4 0.1500 4.04470 # Cl-\npair_coeff 5 5 11.697 2.574 # Al\nbond_coeff 1 0 0.9572 # O-H\nangle_coeff 1 0 104.52 # H-O-H\n#电荷\nset type 3 charge 1.0\nset type 4 charge -1.0\n#运行20步\nrun 20\n#保存data文件\nwrite_data system.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现半椭球的压痕模型的建模",
+        "input": "",
+        "output": "atom_style atomic\nboundary p p p\nunits metal\n\nlattice fcc 3.61\nregion box block -20 20 -13 13 -25 2\ncreate_box 4 box\n\nregion b1 block INF INF INF INF INF -23\nregion b2 block INF INF INF INF -23 -19\nregion b3 block INF INF INF INF -19 -10\ncreate_atoms 1 region b1\ncreate_atoms 2 region b2\ncreate_atoms 3 region b3\n\nregion bot ellipsoid 0 0 0 15 15 30 units box\nregion top block INF INF INF INF -35 0 units box\nregion ellipsoid intersect 2 bot top\ncreate_atoms 4 region ellipsoid\n\nmass 1 64\nmass 2 64\nmass 3 64\nmass 4 12\n\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现石墨烯片的建模，并进行旋转，旋转角度是45度",
+        "input": "",
+        "output": "atom_style atomic\nboundary s s s\nunits metal\nlattice custom 2.4768 a1 1.0 0.0 0.0 a2 0.0 1.732 0.0 a3 0.0 0.0 1.3727 &\nbasis 0.0 0.33333 0.0 &\nbasis 0.0 0.66667 0.0 &\nbasis 0.5 0.16667 0.0 &\nbasis 0.5 0.83333 0.0\nregion box block 0 4 0 4 0 0.8\ncreate_box 1 box\ncreate_atoms        1 box\nmass 1 12\ndisplace_atoms all rotate 0 0 0 1 0 0 45\nwrite_data gp.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现铜晶体块的建模",
+        "input": "",
+        "output": "atom_style atomic\nboundary p p p\nunits metal\nlattice fcc 3.61\nregion box block 0 10 0 10 0 8\ncreate_box 1 box\ncreate_atoms        1 box\nmass 1 64\nwrite_data cu.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现Cu基体内随机插入石墨烯片的建模",
+        "input": "cu.data和gp.data两个模型文件当作已知",
+        "output": "atom_style atomic\nboundary p p p\nunits metal\n#产生三个随机数\nvariable dx1 equal floor(random(1,20,5989))\nvariable dy1 equal floor(random(1,20,456))\nvariable dz1 equal floor(random(1,20,289))\nvariable dx equal ${dx1}\nvariable dy equal ${dy1}\nvariable dz equal ${dz1}\nread_data cu.data extra/atom/types 1\n#使用shift命令随机调整石墨烯位置\nread_data  gp.data add append offset 1 0 0 0 0 shift ${dx} ${dy} ${dz} \npair_style            hybrid lj/cut 10 eam/fs airebo 3.0\npair_coeff            * * eam/fs Cu1.eam.fs Cu NULL\npair_coeff             * * airebo CH.airebo NULL C\npair_coeff             1 2 lj/cut 0.01996 3.225\ngroup cu type 1\ngroup gp type 2\n#删除重叠原子\ndelete_atoms overlap 2 cu gp\nwrite_data cugp.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps向体系内添加60个TIP5P水分子",
+        "input": "",
+        "output": "units real\natom_style charge\natom_modify map array\nregion box block -10 10 -5 5 -5 5\ncreate_box 3 box\nmass 1 15.9994\nmass 2 1.008\nmass 3 1.0e-100\npair_style lj/cut/coul/cut 8.0\npair_coeff 1 1 0.160  3.12\npair_coeff 2 2 0.0    1.0\npair_coeff 3 3 0.0    1.0\nfix mol all property/atom mol\nmolecule water tip5p.mol\ncreate_atoms 0 random 50 34564 NULL mol water 25367 overlap 1.33\ntimestep 0.5\ndump 1 all atom 100 dump.xyz\nfix integrate all rigid/nvt/small molecule temp 300.0 300.0 100.0\nreset_timestep 0\nvelocity all create 300.0 5463576\nthermo_style custom step temp press etotal density pe ke\nthermo 1000\nrun 20000",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现非晶Cu的建模",
+        "input": "",
+        "output": "#模型参数设置\nunits      metal  \ndimension    3\nboundary    p p p\ntimestep    0.001\natom_style    full\nneighbor    2.0 bin\nneigh_modify  delay 0 every 1 check yes\nlattice fcc 3.61\nregion box block -20 20 -20 20 -20 20 \ncreate_box 1 box\ncreate_atoms 1 box\npair_style     eam/fs\npair_coeff      * * Cu1.eam.fs Cu\nvelocity all create 300 90876\nfix 1 all nvt temp 300 2500 0.1 #iso 0 0 1\nrun 10000\nunfix 1\nreset_timestep 0\nfix 1 all nvt temp 2500 300 0.1 #iso 0 0 1\nrun 1000\nwrite_data cu1.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现向非晶Cu内添加晶体Cu球的建模",
+        "input": "cu1.data模型文件当作已知",
+        "output": "units      metal  \ndimension    3\nboundary    p p p\ntimestep    0.001\natom_style    full\nneighbor    2.0 bin\nneigh_modify  delay 0 every 1 check yes\nread_data cu1.data\npair_style     eam/fs\npair_coeff      * * Cu1.eam.fs Cu\nlattice fcc 3.61\nregion del sphere 0 0 0 10\ndelete_atoms region del\ncreate_atoms 1 region del\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps进行建模，模型中间是一个水球，水球外侧是CO2气体",
+        "input": "",
+        "output": "units      real\nboundary   p p p \natom_style full\ntimestep   1\nneighbor   2 bin\nneigh_modify  every 1 delay 0 check yes\n\nregion box block -30 30 -15 15 -30 30 units box\ncreate_box 4 box &\nbond/types 2 &\nangle/types 2 &\nextra/bond/per/atom 2 &\nextra/angle/per/atom 1 &\nextra/special/per/atom 2\n\nregion water sphere 0 0 0 15 units box\nmolecule water TIP4P2005.txt \ncreate_atoms 0 random 800 1235 water mol water 9658 units box\n\nregion water_out sphere 0 0 0 15 side out units box\nregion CO2 intersect 2 water_out box\nmolecule CO2 CO2.txt toff 2 boff 1 aoff 1\ncreate_atoms 0 random 2000 125 CO2 mol CO2 12965 units box\n\nmass 1 15.9994 # O\nmass 2 1.008   # H\nmass 3 12  # C\nmass 4 15.9994   # O \n\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现锐角刀具的建模",
+        "input": "设置三个region，使用相交命令合并为一个封闭的区域，然后在这个区域内生成原子",
+        "output": "units              metal\natom_style          atomic\ndimension           3\nboundary            p p p\ntimestep            0.001\nneighbor            0.2 bin\n\nregion box block -50 50 -10 10 -20 50 units box\ncreate_box 1 box\nregion b block 0 30 -10 10 0 40 units box\nvariable x1 equal cos(PI*15/180)\nvariable z1 equal -sin(PI*15/180)  \nregion p1 plane 0 0 0 ${x1} 0 ${z1} side in units box\nvariable x2 equal -sin(PI*15/180)\nvariable z2 equal cos(PI*15/180)  \nregion p2 plane 0 0 0 ${x2} 0 ${z2} side in units box\nregion tool intersect 3 b p1 p2                                                                                                                                              \nlattice       diamond 3.567                                                                               \ncreate_atoms  1 region tool units box                                                                     \nmass 1 12\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现金刚石三棱锥刀具的建模",
+        "input": "通过三个斜面或者三个斜面加一个平面，合并为一个封闭区域，在区域内生成原子。",
+        "output": "dimension      3\nboundary       p p p\natom_style     atomic\ntimestep       0.001\n#建模\nregion box block -60 60 -60 60 0 60 units box\ncreate_box    1 box\nlattice       diamond 3.56            \nregion      1 plane 0 0 0 2 -2 1 units box\nregion      2 plane 0 0 0 2 2 1 units box\nregion      3 plane 0 0 0 -2 0 1  units box\nregion      tool intersect 3 1 2 3 \ncreate_atoms   1 region tool\n#设置原子质量\nmass  1 12\nwrite_data    tool.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现六边形结构的建模",
+        "input": "用region plane设置6个面，用这个6个面组成一个封闭区域，在封闭区域内生成原子。",
+        "output": "atom_style atomic\nunits metal\nboundary p p p\n#外接圆半径\nvariable R equal 50\n#建盒子\nlattice fcc 3.61\nregion box block -20 20 -20 20 -40 40 \ncreate_box 1 box\n#斜面1\nvariable x1 equal cos(PI*30/180)\nvariable y1 equal sin(PI*30/180)  \nregion p1 plane $R 0 0 ${x1} ${y1} 0  side out units box\n#斜面2\nvariable x1 equal cos(PI*30/180)\nvariable y1 equal -sin(PI*30/180)  \nregion p2 plane -$R 0 0 ${x1} ${y1} 0  side in units box\n#斜面3\nvariable x1 equal -cos(PI*30/180)\nvariable y1 equal -sin(PI*30/180)  \nregion p3 plane -$R 0 0 ${x1} ${y1} 0  side out units box\n#斜面4\nvariable x1 equal -cos(PI*30/180)\nvariable y1 equal sin(PI*30/180)  \nregion p4 plane $R 0 0 ${x1} ${y1} 0  side in units box\n#平面1\nvariable y2 equal $R*cos(PI*30/180)\nregion p5 plane  0 ${y2} 0 0 -1 0  side in units box\n#平面2\nvariable y3 equal -$R*cos(PI*30/180)\nregion p6 plane  0 ${y3} 0 0 1 0  side in units box\n#合并6个面\nregion piece intersect 6 p1 p2 p3 p4 p5 p6\ncreate_atoms 1 region piece\nmass 1 64\nwrite_data all.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现六面体核壳结构建模",
+        "input": "内核为Cu原子，外层包覆着一定厚度的Cu原子。创建内核、外核两个区域，在两个区域内使用create_atoms命令填充原子。",
+        "output": "#模型基本参数\nunits  metal  #单位：真实的单位\nboundary  p p p  #边界条件,周期性边界\natom_style  atomic  #原子类型\n\n#生成方形区域\nregion  box block 0 100 0 100 0 100  #创建方形区域\ncreate_box  2 box  #生成方形盒子，2种原子\n\n#创建球壳区域\nregion  block1 block 0 100 0 100 0 100 units box\nregion  block2 block 20 80 20 80 20 80 side out units box\nregion  shell intersect 2 block1 block2  #厚度为20的壳体\n\n#创建内核区域\nregion block_in block 20 80 20 80 20 80 units box\n\n#在内核内填充2原子\nlattice  fcc 3.61#晶格常数3.61\ncreate_atoms  2 region block_in\n#在壳体内填充1原子\nlattice  fcc 3.61#晶格常数3.61\ncreate_atoms  1 region shell\n\n#设置原子质量\nmass  2 63.5  #2原子质量\nmass1  63.5  #1原子质量\n\n#保存文件\nwrite_data  heke.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现球壳结构建模",
+        "input": "内核为Al原子，外层包覆着一定厚度的Al原子。方法：\n（1）创建内外球两个球形区域\n（2）在外球区域填充1原子\n（3）删除内球区域填充的1原子\n（4）在内球区域填充2原子",
+        "output": "#模型基本参数\nunits metal\natom_style atomic\nboundary p p p\n#创建模拟区域\nregion box block -50 50 -50 50 -50 50 #生成一个边长为100的方形盒子区域\ncreate_box 2 box\n#创建外球区域\nregion ball1 sphere 0 0 0 50 units box  #生成一个半径为50的球形区域\n\n#创建内球区域\nregion ball2 sphere 0 0 0 40 units box #生成一个半径为40的球形区域，使壳层厚度10\n\n#在外球区域填充1原子\nlattice fcc 4.05  #设置晶格参数\ncreate_atoms 1 region ball1\n\n#删除内球区域1原子\ndelete_atoms region ball2 compress yes  #压缩id\n\n#在内球区域填充2原子\nlattice fcc 4.05 #设置晶格参数\ncreate_atoms 2 region ball2\n\n#设置原子质量\nmass 1 27 #设置1原子质量27\nmass 2 27 #设置2原子质量27\n\n#保存文件\nwrite_data qiuke.data #输出qiuke.data文件",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现胶囊粒子分子模型建模",
+        "input": "以Cu原子为例。创建三个区域：上半球区域、圆柱区域、下半球区域",
+        "output": "#模型基本参数\nunits metal #原子模型：金属原子模型\nboundary p p p #边界条件,周期性边界\natom_style atomic #原子类型\n\n#生成方形区域\nregion box block -40 40 -40 40 -80 80  #创建方形区域\ncreate_box 1 box#生成盒子，2种原子\n\n#创建圆柱区域\nregion cylinder1_out cylinder z 0 0 40 -40 40 side out units box   #圆柱外侧\nregion cylinder2_out cylinder z 0 0 40 -40 40 units box            #圆柱内侧\n\n#创建半球区域\nregion ball1_out sphere 0 0 40 40 units box\nregion ball2_out sphere 0 0 -40 40 units box\nregion banqiu1_out intersect 2 ball1_out cylinder1_out #上半球\nregion banqiu2_out intersect 2 ball2_out cylinder1_out #下半球\n\n#在外层填充1原子\nlattice fcc 3.62 #晶格参数设置\ncreate_atoms 1 region banqiu1_out #上半球填充1原子\ncreate_atoms 1 region banqiu2_out #下半球填充1原子\ncreate_atoms 1 region cylinder2_out #圆柱填充1原子\n\n#设置原子质量\nmass 1 64 #1原子质量\n\n#保存文件\nwrite_data jiaonang.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现纳米管模型建模",
+        "input": "创建三个区域：内圆柱区域、外圆柱区域、管区域",
+        "output": "#模型基本参数\nunits metal #原子模型：金属原子模型\nboundary p p p #边界条件,周期性边界\natom_style atomic #原子类型\n\n#生成方形区域\nregion box block -40 40 -40 40 -80 80  #创建方形区域\ncreate_box 1 box#生成盒子，2种原子\n\n#创建圆柱区域\nregion cylinder1 cylinder z 0 0 30 -80 80 side out units box   #圆柱外侧\nregion cylinder2 cylinder z 0 0 40 -80 80 units box            #圆柱内侧\n\n#创建管层区域\nregion guan intersect 2 cylinder1 cylinder2 #管道区域\n\n#在外层填充1原子\nlattice hcp 5 #晶格参数设置\ncreate_atoms 1 region guan #上半球填充1原子\n\n#设置原子质量\nmass 1 64 #1原子质量\n\n#保存文件\nwrite_data guan.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现高熵合金建模",
+        "input": "",
+        "output": "#初始模拟系统设置\nunits metal #单位\nboundary  p p p #边界条件\natom_style  atomic  #原子类型\ntimestep 0.001  #时间步长\n#构建模型\nlattice fcc 3.56 #设置晶格参数\nregion box block 0 10 0 10 0 10 #生产成方形区域\ncreate_box    5 box\ncreate_atoms  1 box\n#将type为1的原子转换为其他原子\nset  type 1 type/ratio 2 0.2 87393 #将1原子转换为2原子\nset  type 1 type/ratio 3 0.5 87393 #将1原子转换为3原子\nset  type 1 type/ratio 4 0.5 87393 #将1原子转换为4原子\nset  type 3 type/ratio 5 0.5 87393 #将1原子转换为5原子\n#设置原子类型\nmass  1 27 #Al原子\nmass  2 56 #Fe原子\nmass  3 28 #Si原子\nmass  4 64 #Cu原子\nmass  5 24 #Mg原子\nwrite_data AlCuFeMgSi.data #输出data文件",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现复合材料/层合板结构建模",
+        "input": "",
+        "output": "#模型基本参数\nunits               metal                           #原子模型：金属原子模型\nboundary            p p p                           #边界条件,周期性边界\natom_style          atomic                          #原子类型\ntimestep            0.001                           #时间步长\n\n#生成模拟区域\nregion              box block -25 25 -100 100 -10 10  #创建方形区域\ncreate_box          5 box                           #生成盒子，2种原子\n\n#创建第一层材料\nregion one block -25 25 -100 100 -10 -6 units box #生成1层区域\nlattice fcc 3.2\ncreate_atoms 1 region one   #填充1原子 \nmass 1 27 #Al原子\n\n#创建第二层材料\nregion two block -25 25 -100 100 -6 -2 units box #生成2层区域\nlattice fcc 3.2\ncreate_atoms 2 region two   #填充2原子 \nmass 2 24 #Mg原子\n\n#创建第三层材料\nregion three block -25 25 -100 100 -2 2 units box #生成3层区域\nlattice fcc 2.52\ncreate_atoms 3 region three   #填充3原子 \nmass 3 28 #Si原子\n\n#创建第四层材料\nregion four block -25 25 -100 100 2 6 units box #生成4层区域\nlattice fcc 3.2\ncreate_atoms 4 region four   #填充4原子 \nmass 4 56 #Fe原子\n\n#创建第五层材料\nregion five block -25 25 -100 100 6 10 units box #生成5层区域\nlattice fcc 3.2\ncreate_atoms 5 region five   #填充5原子 \nmass 5 64 #Cu原子\n\n#保存文件\nwrite_data cenghe.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    },
+    {
+        "instruction": "用lammps实现胶囊核壳结构建模",
+        "input": "需要创建两次如下区域：上半球区域、圆柱区域、下半球区域",
+        "output": "#模型基本参数\nunits               metal                           #原子模型：金属原子模型\nboundary            p p p                           #边界条件,周期性边界\natom_style          atomic                          #原子类型\n#生成方形区域\nregion              box block -40 40 -40 40 -80 80  #创建方形区域\ncreate_box          2 box                           #生成盒子，2种原子\n#创建外层圆柱区域\nregion cylinder1_out cylinder z 0 0 40 -40 40 side out units box   #外层圆柱外侧\nregion cylinder2_out cylinder z 0 0 40 -40 40 units box            #外层圆柱内侧\n#创建内层圆柱区域\nregion cylinder1_in cylinder z 0 0 30 -30 30 side out units box    #内层圆柱外侧\nregion cylinder2_in cylinder z 0 0 30 -30 30 units box             #内层圆柱内侧\n#创建外半球区域\nregion ball1_out sphere 0 0 40 40 units box\nregion ball2_out sphere 0 0 -40 40 units box\nregion banqiu1_out intersect 2 ball1_out cylinder1_out             #外层上半球\nregion banqiu2_out intersect 2 ball2_out cylinder1_out             #外层下半球\n#创建内半球区域\nregion ball1_in sphere 0 0 40 30 units box\nregion ball2_in sphere 0 0 -40 30 units box\nregion banqiu1_in intersect 2 ball1_in cylinder1_in                #内层上半球\nregion banqiu2_in intersect 2 ball2_in cylinder1_in                #内层下半球\n#在外层填充1原子\nlattice             fcc 3.5288                #Bi晶格常数3.5288\ncreate_atoms        1 region banqiu1_out      #在外层上半球填充1原子\ncreate_atoms        1 region banqiu2_out      #在外层下半球填充1原子\ncreate_atoms        1 region cylinder2_out    #在外层圆柱填充1原子\n#删除内核区域1原子\ndelete_atoms region banqiu1_in compress yes   #删除内层上半球1原子                       \ndelete_atoms region banqiu2_in compress yes   #删除内层下半球1原子\ndelete_atoms region cylinder2_in compress yes #删除内层圆柱1原子\n#在内核内填充2原子\nlattice      sc 3.27                 #2原子晶格常数3.27\ncreate_atoms 2 region banqiu1_in     #在内层上半球填充2原子\ncreate_atoms 2 region banqiu2_in     #在内层下半球填充2原子\ncreate_atoms 2 region cylinder2_in   #在内层圆柱填充2原子\n#设置原子质量\nmass         1 60                    #1原子质量60（这里随便设置的）\nmass         2 200                   #2原子质量200（这里随便设置的）\n#保存文件\nwrite_data jiaonang.data",
+        "system": "",
+        "history": [
+            [],
+            []
+        ]
+    }
+]

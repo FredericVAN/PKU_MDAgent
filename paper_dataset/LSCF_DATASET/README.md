@@ -1,0 +1,2 @@
+total_examples.json is the Chinese simulation dataset with 127 entries, and En_total_examples.json is its English version.
+total_models.json is the Chinese modeling dataset with 40 entries, and En_total_models.json is its English version.
