@@ -120,23 +120,23 @@ Visit the page to open a website with the default address:http://localhost:5006/
 
 1.Go to the welcome page where you can interact with MDAgent by means of a dialogue
 
-![image-20250218204440521](C:\Users\ZhuofanShi\AppData\Roaming\Typora\typora-user-images\image-20250218204440521.png)
+![image-20250218204440521](assets/image-20250218204440521.png)
 
 2.When User enters 'I want to Calculate the volumetric heat capacity of copper using LAMMPS, give me a good Lammps Code.PLEASE SPEAK IN PLEASE SPEAK IN ENGLISH', MDAgent will automatically take over the problem and start working on it.
 
 3.Planner starts to divide the sub-tasks according to the current team members' responsibilities and the tasks given by the user, in this case it is divided into LammpsWorker to generate the code, and LammpsEvaluator is responsible for evaluating the results.
 
-![image-20250218203901925](C:\Users\ZhuofanShi\AppData\Roaming\Typora\typora-user-images\image-20250218203901925.png)
+![image-20250218203901925](assets/image-20250218203901925.png)
 
 4.LammpsWorker then gives the script code and LammpsEvalutor evaluates the script code. The two loop several times until LammpsEvalutor gives a sufficiently high score (in this demo case a passing score threshold of 8 was set)
 
-![image-20250218204015161](C:\Users\ZhuofanShi\AppData\Roaming\Typora\typora-user-images\image-20250218204015161.png)
+![image-20250218204015161](assets/image-20250218204015161.png)
 
-![image-20250218204051433](C:\Users\ZhuofanShi\AppData\Roaming\Typora\typora-user-images\image-20250218204051433.png)
+![image-20250218204051433](assets/image-20250218204051433.png)
 
 5.MDAgent will then ask the user for his/her opinion at this point. If the user is not satisfied with the script code, he/she can tell MDAgent through the dialogue where there are errors in the script code and ask for a new modification based on the original one, or he/she can post a new requirement through the dialogue.
 
-![image-20250218204240330](C:\Users\ZhuofanShi\AppData\Roaming\Typora\typora-user-images\image-20250218204240330.png)
+![image-20250218204240330](assets/image-20250218204240330.png)
 
 ## Methods for integrating domain knowledge into LLM
 
@@ -147,7 +147,7 @@ Visit the page to open a website with the default address:http://localhost:5006/
 ### Method1.fine-tuning
 
     The mainstream unsloth framework (https://github.com/unslothai/unsloth) is used in this study to fine-tune the macromodel.
-
+    
     We provide an example file in the . /fine-tuning folder to provide an example file running on the colab with google drive platform for fine-tuning Meta-Llama-3.1-8B-Instruct as LammpsWorkerLLM.
 
 ![image-20250215225737037](assets/image-20250215225737037.png)
@@ -159,11 +159,11 @@ Visit the page to open a website with the default address:http://localhost:5006/
 #### Why RAG can only be used as an alternative
 
     With respect to the LAMMPS code generation and evaluation capabilities explored in this study, we found that the RAG technique has some limitations in directly enhancing large model domain knowledge capabilities. Specifically, since RAG is primarily adept at retrieving relevant information or contextual knowledge from knowledge bases, while it can provide snippets of LAMMPS documentation or examples before each answer, the retrieved content is not always guaranteed to be sufficient, and RAG does not allow LLMs to acquire the deep syntactic understanding at the parameter level required to generate fully valid and executable LAMMPS code. On the other hand, fine-tuning directly exposes LLM to a large number of correct LAMMPS code examples. Through this process, the larger model learns the complex syntax specific to LAMMPS. The result is that the effect is not as direct and efficient as fine-tuning the model parameters directly.
-
+    
     For Example, Imagine asking for LAMMPS code to simulate a simple Lennard-Jones fluid. RAG might retrieve documentation explaining Lennard-Jones potentials or example scripts that are*similar* but not exactly what's needed.  The LLM still needs to *synthesize* valid code from these pieces. Fine-tuning, however, trains the model to directly *generate* the correct sequence of LAMMPS commands.
-
+    
     Nonetheless, we believe that the RAG technique has significant value as a generic knowledge integration programme. On the one hand, even after fine-tuning the LLM, it may happen that the worker cannot easily solve some problems. At this point the MDAgent is allowed to try to acquire knowledge to help before answering by calling the RAG, or other Tools. On the other hand, considering other problems that the MDAgent faces in the future, the scenario may not be able to find a suitable fine-tuning dataset to fine-tune, which can only be solved by using the RAG and the TOOLS as alternatives.
-
+    
     Therefore, in this study, while we take fine-tuning as the main research direction, we also provide RAG as an alternative, and keep the interface of RAG in the project code for further exploring and expanding its application potential in the future, as well as providing technical reserves for more general scenarios.
 
 #### RAG's technology
@@ -266,11 +266,11 @@ This project is a multi-agent collaborative system developed on the basis of the
 ### Important internal design
 
     Like all methods based on LLMs, MDAgent also struggles to completely avoid issues such as hallucinations, inability to answer successfully in one go, and factual errors. For these common problems, we have not yet found perfect solutions in current scientific research papers. To minimize the occurrence of these potential errors as much as possible, this paper adopts the Actor-Critic model and human-in-the-loop.
-
+    
     Actor-Critic Model (Worker and Evaluator): After the Worker generates LAMMPS code, the Evaluator will conduct checks and evaluations. The evaluation content includes the detection of the aforementioned error types. For example, the Evaluator will check whether there are misspelled commands in the code (hallucination errors) or whether the physical parameters conform to common sense (factual errors). If the Evaluator's assessment is unqualified, the evaluation results will be fed back to the Worker, and the Worker will reflect and correct based on the feedback and regenerate the code.
-
+    
     Human in Loop: During the Actor-Critic iterative loop, we allow human users to observe every input and output of the Agent. When users find errors (for example, if a user finds that MDAgent used the wrong lattice constant), they can directly intervene and provide corrective guidance. For example, users can directly inform the Agent of the correct lattice constant.
-
+    
     Also, we have added emphasis in the original article that our domain experts have discussed and summarised several types of errors that are common in the code generated by LammpsWorkerLLM. Based on these error types summarised by the experts, we augmented LammpsEvaluator with prompt.
 
 ### Tool Integration
@@ -288,7 +288,7 @@ The code executor in this project is based on the Code Executors module provided
 ![Code Executor Docker](https://microsoft.github.io/autogen/0.2/assets/images/code-executor-docker-8d3f56a6bb4b4605fec68804350f42fc.png)
 
     In this study we have chosen to use Docker Container as a platform for running the code. the docker executor extracts code blocks from input messages, writes them to code files. For each code file, it starts a docker container to execute the code file, and reads the console output of the code execution.
-
+    
     In order to increase the accuracy rate, there is a Code Writer Agent in addition to the Code Executor Agent. In AutoGen, coding can be a conversation between a code writer agent and a code executor agent, mirroring the interaction between a programmer and a code interpreter.
 
 ![Code Writer and Code Executor](https://microsoft.github.io/autogen/0.2/assets/images/code-execution-in-conversation-f02c7a3ea7e45e3f4aa71d8def851677.png)
