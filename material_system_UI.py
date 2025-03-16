@@ -388,7 +388,7 @@ if not os.environ.get('OPENAI_API_KEY'):
 chat_interface = pn.chat.ChatInterface(callback=callback)
 chat_interface.send(f"欢迎使用MaterialAgent,目前针对材料领域的Agent成员有\n:{AGNET_DESCRIPTION}", user="System", respond=False)
 chat_interface.servable()
-
+pn.serve(chat_interface, show=True, port=5006)
 #TODO 执行运行的话用这个
 # with Cache.disk(cache_seed=41) as cache:
 #     task_str = f"""
