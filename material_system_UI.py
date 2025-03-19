@@ -18,7 +18,7 @@ os.environ["OPENAI_API_KEY"] = ""
 input_future = None
 gpt4o_mini_config_list=[
     {
-        "model": "gpt-4o-mini",
+        "model": "gpt-4o",
         "api_key": os.environ["OPENAI_API_KEY"],
 
     }
