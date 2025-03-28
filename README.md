@@ -430,4 +430,4 @@ Reply 'TERMINATE' in the end when everything is done.
 ```
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=FredericVAN/PKU_MDAgent&type=Date)](https://www.star-history.com/#FredericVAN/PKU_MDAgent&Date)
+<iframe style="width:100%;height:auto;min-width:600px;min-height:400px;" src="https://www.star-history.com/embed?secret=Z2hwXzR0eWpoeEhLYWZXQk9Zb3NOWjd2QnZQaHFNU0xsVzJCcjZVQQ==#FredericVAN/PKU_MDAgent&Date" frameBorder="0"></iframe>
