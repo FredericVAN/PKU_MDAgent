@@ -426,3 +426,6 @@ If the result indicates there is an error, fix the error and output the code aga
 When you find an answer, verify the answer carefully. Include verifiable evidence in your response if possible.
 Reply 'TERMINATE' in the end when everything is done.
 ```
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=FredericVAN/PKU_MDAgent&type=Date)](https://www.star-history.com/#FredericVAN/PKU_MDAgent&Date)
