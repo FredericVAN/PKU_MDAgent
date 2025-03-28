@@ -1,10 +1,10 @@
 # Molecular Dynamics Agent
 
-This repo contains the code and dataset for "**A fine-tuned large language model based molecular dynamics agent for code generation to obtain material thermodynamic parameters**".
+Scientific Reports:**《A fine-tuned large language model based molecular dynamics agent for code generation to obtain material thermodynamic parameters》**
+https://www.nature.com/articles/s41598-025-92337-6
 
 ## **Introduction**
-
-MDAgent is an innovative framework designed to leverage large language models for the automatic generation, execution, and refinement of simulation codes in materials science. Built on top of the LAMMPS software, MDAgent validates the effectiveness of automated code generation and review in thermodynamic simulations. We have constructed a specialized dataset of thermodynamic simulation codes for LAMMPS to fine-tune the language model, thereby enhancing code generation and review capabilities.
+In the field of materials science, addressing the complex relationship between the material structure and properties has increasingly involved leveraging the text generation capabilities of AI-generated content (AIGC) models for tasks that include literature mining and data analysis. However, theoretical calculations and code development remain labor-intensive challenges. This paper proposes a novel approach based on text-to-code generation, utilizing large language models to automate the implementation of simulation programs in materials science. The effectiveness of automated code generation and review is validated with thermodynamics simulations based on the LAMMPS software as a foundation. This study introduces Molecular Dynamics Agent (MDAgent), a framework designed to guide large models in automatically generating, executing, and refining simulation code. In addition, a thermodynamic simulation code dataset for LAMMPS was constructed to fine-tune the language model. Expert evaluation scores demonstrate that MDAgent significantly improves the code generation and review capabilities. The proposed approach reduces the average task time by 42.22%, as compared to traditional models, thus highlighting its potential applications in the field of materials science.
 
 ## Dataset
 
