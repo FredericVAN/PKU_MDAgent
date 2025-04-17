@@ -17,6 +17,25 @@ https://huggingface.co/datasets/FredericFan/MDAgent_LEQS_DATASET
 
 https://huggingface.co/datasets/FredericFan/MDAgent_LSCF_DATASET
 
+### LSCF-Dataset
+The LSCF-Dataset is designed to fine-tune large language models for handling LAMMPS material simulations. This dataset enhances the model's ability to generate accurate LAMMPS scripts across diverse materials science scenarios.
+
+#### Dataset Structure
+- instruction：Tasks that need to be completed with code
+- input：Supplement to Task
+- output： Standard Lammps code
+
+**Scripts**: Contains 167 scripts divided into initialization, modeling, and computation sections.
+**Sources**: Scripts are sourced from manual production, LAMMPS documentation cases, and online resources in a 1:2:2 ratio.
+
+#### Applications
+
+- Material mechanical property simulation
+- Material synthesis and processing simulation
+- Interface simulation
+- Fluid simulation
+- Heat transfer simulation
+
 ### LEQS-Dataset
 
 LEQS-Dataset is a task dataset designed by material science experts, which contains LAMMPS script generation tasks and their scores. It is used to evaluate and improve the script generation and review capabilities of models in the field of material science.
