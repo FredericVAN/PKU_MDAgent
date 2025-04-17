@@ -26,11 +26,12 @@ This study presents a  **novel framework** :
 
 ## Methods
 
-![41598_2025_92337_Fig1_HTML (1)](assets/41598_2025_92337_Fig1_HTML (1).png)
+![111](assets/111.png)
 
 Comparison of thermodynamic analysis workflow with and without the use of Molecular Dynamics Agent (MDAgent). In the process on the left, the manual workflow requires human users to perform every step, resulting in inefficiency, complexity, and high skill requirements. In contrast, in the MDAgent-assisted workflow on the right, the agent automates key tasks in LAMMPS and other software, enabling a semi-automated, efficient process. The agent simplifies user tasks, reduces the skill requirement, and minimizes errors by overseeing each step and assisting the user as needed.
 
-![41598_2025_92337_Fig2_HTML (1)](assets/41598_2025_92337_Fig2_HTML (1).png)
+![222](assets/222.png)
+
 
 (**a**) Architecture diagram: MDAgent with Manager, Worker, and evaluator powered by large language models (LLMs), interacting through a user interface. (**b**) Example of the dataset used.
 
