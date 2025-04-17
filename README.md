@@ -1,73 +1,102 @@
-# 📚Molecular Dynamics Agent
+# 📚Molecular Dynamics Agent（MDAgent）
 
-Scientific Reports:**《A fine-tuned large language model based molecular dynamics agent for code generation to obtain material thermodynamic parameters》**
-https://www.nature.com/articles/s41598-025-92337-6
+**《A fine-tuned large language model based molecular dynamics agent for code generation to obtain material thermodynamic parameters》**
 
-🏛️ By Peking University
+📄 *Published in* **Scientific Reports**
 
-## **Introduction**
+🔗 [https://www.nature.com/articles/s41598-025-92337-6](https://www.nature.com/articles/s41598-025-92337-6)
 
-In the field of materials science, addressing the complex relationship between the material structure and properties has increasingly involved leveraging the text generation capabilities of AI-generated content (AIGC) models for tasks that include literature mining and data analysis. However, theoretical calculations and code development remain labor-intensive challenges. This paper proposes a novel approach based on text-to-code generation, utilizing large language models to automate the implementation of simulation programs in materials science. The effectiveness of automated code generation and review is validated with thermodynamics simulations based on the LAMMPS software as a foundation. This study introduces Molecular Dynamics Agent (MDAgent), a framework designed to guide large models in automatically generating, executing, and refining simulation code. In addition, a thermodynamic simulation code dataset for LAMMPS was constructed to fine-tune the language model. Expert evaluation scores demonstrate that MDAgent significantly improves the code generation and review capabilities. The proposed approach reduces the average task time by 42.22%, as compared to traditional models, thus highlighting its potential applications in the field of materials science.
+🏛️ *By* **Peking University**
 
-## Dataset
+## 🔍 **Introduction**
 
-It can be found in the PaperDataset folder of this article or can be found at the open source Hugginface link:
+In the field of **materials science** 🧬, uncovering the intricate structure–property relationships increasingly relies on **AI-generated content (AIGC)** 🧠 for tasks like **literature mining** and  **data analysis** . Yet, **theoretical computation** and **simulation code writing** remain labor-intensive 🧑‍💻.
 
-https://huggingface.co/datasets/FredericFan/MDAgent_LEQS_DATASET
+This study presents a  **novel framework** :
 
-https://huggingface.co/datasets/FredericFan/MDAgent_LSCF_DATASET
+🚀 **Molecular Dynamics Agent (MDAgent)** — a fine-tuned **text-to-code generation agent** empowered by  **large language models (LLMs)** .
 
-### LSCF-Dataset
-The LSCF-Dataset is designed to fine-tune large language models for handling LAMMPS material simulations. This dataset enhances the model's ability to generate accurate LAMMPS scripts across diverse materials science scenarios.
+### 🧰 Key Features:
 
-#### Dataset Structure
-- instruction：Tasks that need to be completed with code
-- input：Supplement to Task
-- output： Standard Lammps code
+* 📦  **Automatic generation** ,  **execution** , and **refinement** of **thermodynamic simulation code**
+* 🔧 Based on **LAMMPS** (Large-scale Atomic/Molecular Massively Parallel Simulator)
+* 📚 A curated **LAMMPS thermodynamic simulation dataset** was constructed for fine-tuning
+* 🧑‍🔬 **Expert evaluations** show **significant improvement** in code quality and relevance
+* ⏱️ Achieves **42.22% reduction** in task time compared to traditional approaches
 
-**Scripts**: Contains 167 scripts divided into initialization, modeling, and computation sections.
-**Sources**: Scripts are sourced from manual production, LAMMPS documentation cases, and online resources in a 1:2:2 ratio.
+## Methods
 
-#### Applications
+![41598_2025_92337_Fig1_HTML (1)](assets/41598_2025_92337_Fig1_HTML (1).webp)
 
-- Material mechanical property simulation
-- Material synthesis and processing simulation
-- Interface simulation
-- Fluid simulation
-- Heat transfer simulation
+Comparison of thermodynamic analysis workflow with and without the use of Molecular Dynamics Agent (MDAgent). In the process on the left, the manual workflow requires human users to perform every step, resulting in inefficiency, complexity, and high skill requirements. In contrast, in the MDAgent-assisted workflow on the right, the agent automates key tasks in LAMMPS and other software, enabling a semi-automated, efficient process. The agent simplifies user tasks, reduces the skill requirement, and minimizes errors by overseeing each step and assisting the user as needed.
 
-### LEQS-Dataset
+![41598_2025_92337_Fig2_HTML (1)](assets/41598_2025_92337_Fig2_HTML (1).webp)
 
-LEQS-Dataset is a task dataset designed by material science experts, which contains LAMMPS script generation tasks and their scores. It is used to evaluate and improve the script generation and review capabilities of models in the field of material science.
+(**a**) Architecture diagram: MDAgent with Manager, Worker, and evaluator powered by large language models (LLMs), interacting through a user interface. (**b**) Example of the dataset used.
 
-#### Dataset Structure
-The original data mainly：Each quadruplet includes a task description, a generated script, an expert score (0-10), and a scoring basis.
-The data format provided here is SFT
+## 📂 **Dataset Overview**
 
-- **instruction**:System prompt as Lammps evaluation expert
+The datasets are available in the **`PaperDataset`** folder of the article or can be accessed via 🤗 **Hugging Face**:
 
-- **input**:
+- 🔗 [MDAgent_LEQS_DATASET](https://huggingface.co/datasets/FredericFan/MDAgent_LEQS_DATASET)
+- 🔗 [MDAgent_LSCF_DATASET](https://huggingface.co/datasets/FredericFan/MDAgent_LSCF_DATASET)
 
-  - User Task Description: A specific task to calculate the thermodynamic properties of materials using LAMMPS.
+### 🧪 **LSCF-Dataset**
 
-  - Generated Script:在 A LAMMPS script generated to complete the task.
- 
-- **Output**: 
+**(LAMMPS Script Construction for Fine-tuning)**
 
-  - Expert Score: The score given by experts according to a unified evaluation rule.
- 
-  - deducted_score： Points deducted
+A dataset designed to fine-tune large language models for handling LAMMPS-based **material simulations**. It improves model capabilities for generating accurate and structured LAMMPS input scripts.
 
-  - Scoring Basis: A detailed explanation of the expert's score, considering multiple factors.
+#### 🧷 Structure:
 
-#### Application Scenarios
+- 📌 `instruction`: Code generation task description
+- 📌 `input`: Task-specific supplements
+- 📌 `output`: Standardized LAMMPS script
 
-- Thermal Expansion Coefficient Calculation
-- Thermal Conductivity Calculation
-- Density Calculation
-- Phase Change Behavior Analysis
+**Script Details:**
 
+- 💡 167 scripts total
+- 🔧 Sections: **Initialization**, **Modeling**, **Computation**
+- 🧾 Source ratio:
+  - Manual production: 1️⃣
+  - LAMMPS official docs: 2️⃣
+  - Online repositories: 2️⃣
 
+#### 📈 Application Scenarios:
+
+- 🏗️ Material mechanical property simulation
+- 🔬 Synthesis & processing simulation
+- 🧩 Interface simulation
+- 💧 Fluid dynamics simulation
+- 🌡️ Heat transfer simulation
+
+### 📊 **LEQS-Dataset**
+
+**(LAMMPS Expert Quality Scoring)**
+
+A **benchmark dataset** crafted by materials science experts to **evaluate and improve** LLM-generated LAMMPS scripts. Includes expert-assigned scores and rationale for each generated script.
+
+#### 🧷 Structure:
+
+Each data point includes:
+
+- 📌 `instruction`: System prompt for the model (act as an expert reviewer)
+- 📌 `input`:
+  - User Task Description
+  - Generated LAMMPS Script
+- 📌 `output`:
+  - 🧠 Expert Score (0–10)
+  - ❌ Deducted Score
+  - 🧾 Scoring Basis (explains the evaluation)
+
+**Format:** Structured for **Supervised Fine-Tuning (SFT)**.
+
+#### 📈 Application Scenarios:
+
+- 📐 Thermal Expansion Coefficient Calculation
+- 🔥 Thermal Conductivity Simulation
+- ⚖️ Density Calculation
+- 🔁 Phase Change Behavior Analysis
 
 ## How to Install
 
@@ -202,7 +231,7 @@ Visit the page to open a website with the default address:http://localhost:5006/
 ### Method1.fine-tuning
 
     The mainstream unsloth framework (https://github.com/unslothai/unsloth) is used in this study to fine-tune the macromodel.
-
+    
     We provide an example file in the . /fine-tuning folder to provide an example file running on the colab with google drive platform for fine-tuning Meta-Llama-3.1-8B-Instruct as LammpsWorkerLLM.
 
 ![image-20250215225737037](assets/image-20250215225737037.png)
@@ -214,11 +243,11 @@ Visit the page to open a website with the default address:http://localhost:5006/
 #### Why RAG can only be used as an alternative
 
     With respect to the LAMMPS code generation and evaluation capabilities explored in this study, we found that the RAG technique has some limitations in directly enhancing large model domain knowledge capabilities. Specifically, since RAG is primarily adept at retrieving relevant information or contextual knowledge from knowledge bases, while it can provide snippets of LAMMPS documentation or examples before each answer, the retrieved content is not always guaranteed to be sufficient, and RAG does not allow LLMs to acquire the deep syntactic understanding at the parameter level required to generate fully valid and executable LAMMPS code. On the other hand, fine-tuning directly exposes LLM to a large number of correct LAMMPS code examples. Through this process, the larger model learns the complex syntax specific to LAMMPS. The result is that the effect is not as direct and efficient as fine-tuning the model parameters directly.
-
+    
     For Example, Imagine asking for LAMMPS code to simulate a simple Lennard-Jones fluid. RAG might retrieve documentation explaining Lennard-Jones potentials or example scripts that are*similar* but not exactly what's needed.  The LLM still needs to *synthesize* valid code from these pieces. Fine-tuning, however, trains the model to directly *generate* the correct sequence of LAMMPS commands.
-
+    
     Nonetheless, we believe that the RAG technique has significant value as a generic knowledge integration programme. On the one hand, even after fine-tuning the LLM, it may happen that the worker cannot easily solve some problems. At this point the MDAgent is allowed to try to acquire knowledge to help before answering by calling the RAG, or other Tools. On the other hand, considering other problems that the MDAgent faces in the future, the scenario may not be able to find a suitable fine-tuning dataset to fine-tune, which can only be solved by using the RAG and the TOOLS as alternatives.
-
+    
     Therefore, in this study, while we take fine-tuning as the main research direction, we also provide RAG as an alternative, and keep the interface of RAG in the project code for further exploring and expanding its application potential in the future, as well as providing technical reserves for more general scenarios.
 
 #### RAG's technology
@@ -321,11 +350,11 @@ This project is a multi-agent collaborative system developed on the basis of the
 ### Important internal design
 
     Like all methods based on LLMs, MDAgent also struggles to completely avoid issues such as hallucinations, inability to answer successfully in one go, and factual errors. For these common problems, we have not yet found perfect solutions in current scientific research papers. To minimize the occurrence of these potential errors as much as possible, this paper adopts the Actor-Critic model and human-in-the-loop.
-
+    
     Actor-Critic Model (Worker and Evaluator): After the Worker generates LAMMPS code, the Evaluator will conduct checks and evaluations. The evaluation content includes the detection of the aforementioned error types. For example, the Evaluator will check whether there are misspelled commands in the code (hallucination errors) or whether the physical parameters conform to common sense (factual errors). If the Evaluator's assessment is unqualified, the evaluation results will be fed back to the Worker, and the Worker will reflect and correct based on the feedback and regenerate the code.
-
+    
     Human in Loop: During the Actor-Critic iterative loop, we allow human users to observe every input and output of the Agent. When users find errors (for example, if a user finds that MDAgent used the wrong lattice constant), they can directly intervene and provide corrective guidance. For example, users can directly inform the Agent of the correct lattice constant.
-
+    
     Also, we have added emphasis in the original article that our domain experts have discussed and summarised several types of errors that are common in the code generated by LammpsWorkerLLM. Based on these error types summarised by the experts, we augmented LammpsEvaluator with prompt.
 
 ### Tool Integration
@@ -343,7 +372,7 @@ The code executor in this project is based on the Code Executors module provided
 ![Code Executor Docker](https://microsoft.github.io/autogen/0.2/assets/images/code-executor-docker-8d3f56a6bb4b4605fec68804350f42fc.png)
 
     In this study we have chosen to use Docker Container as a platform for running the code. the docker executor extracts code blocks from input messages, writes them to code files. For each code file, it starts a docker container to execute the code file, and reads the console output of the code execution.
-
+    
     In order to increase the accuracy rate, there is a Code Writer Agent in addition to the Code Executor Agent. In AutoGen, coding can be a conversation between a code writer agent and a code executor agent, mirroring the interaction between a programmer and a code interpreter.
 
 ![Code Writer and Code Executor](https://microsoft.github.io/autogen/0.2/assets/images/code-execution-in-conversation-f02c7a3ea7e45e3f4aa71d8def851677.png)
