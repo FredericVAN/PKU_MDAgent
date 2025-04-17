@@ -17,6 +17,39 @@ https://huggingface.co/datasets/FredericFan/MDAgent_LEQS_DATASET
 
 https://huggingface.co/datasets/FredericFan/MDAgent_LSCF_DATASET
 
+### LEQS-Dataset
+
+LEQS-Dataset is a task dataset designed by material science experts, which contains LAMMPS script generation tasks and their scores. It is used to evaluate and improve the script generation and review capabilities of models in the field of material science.
+
+#### Dataset Structure
+The original data mainly：Each quadruplet includes a task description, a generated script, an expert score (0-10), and a scoring basis.
+The data format provided here is SFT
+
+- **instruction**:System prompt as Lammps evaluation expert
+
+- **input**:
+
+  - User Task Description: A specific task to calculate the thermodynamic properties of materials using LAMMPS.
+
+  - Generated Script:在 A LAMMPS script generated to complete the task.
+ 
+- **Output**: 
+
+  - Expert Score: The score given by experts according to a unified evaluation rule.
+ 
+  - deducted_score： Points deducted
+
+  - Scoring Basis: A detailed explanation of the expert's score, considering multiple factors.
+
+#### Application Scenarios
+
+- Thermal Expansion Coefficient Calculation
+- Thermal Conductivity Calculation
+- Density Calculation
+- Phase Change Behavior Analysis
+
+
+
 ## How to Install
 
 The recommended environment is Python 3.11.
