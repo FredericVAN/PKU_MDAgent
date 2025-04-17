@@ -1,9 +1,9 @@
-# Molecular Dynamics Agent
+# 📚Molecular Dynamics Agent
 
 Scientific Reports:**《A fine-tuned large language model based molecular dynamics agent for code generation to obtain material thermodynamic parameters》**
 https://www.nature.com/articles/s41598-025-92337-6
 
-By Peking University
+🏛️ By Peking University
 
 ## **Introduction**
 
