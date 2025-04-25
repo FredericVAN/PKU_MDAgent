@@ -8,6 +8,16 @@
 
 🏛️ *By* **Peking University**
 
+The **datasets** are available in the **`PaperDataset`** folder of the article or can be accessed via 🤗 **Hugging Face**:
+
+- 🔗 [MDAgent_LEQS_DATASET](https://huggingface.co/datasets/FredericFan/MDAgent_LEQS_DATASET)
+- 🔗 [MDAgent_LSCF_DATASET](https://huggingface.co/datasets/FredericFan/MDAgent_LSCF_DATASET)
+  
+The **Large language Model（SFTed）** are available via 🤗 **Hugging Face**:
+
+- 🔗 [MDQwen2.5-14B](https://huggingface.co/FredericFan/MDQwen2.5-14B)
+
+  
 ## 🔍 **Introduction**
 
 In the field of **materials science** 🧬, uncovering the intricate structure–property relationships increasingly relies on **AI-generated content (AIGC)** 🧠 for tasks like **literature mining** and  **data analysis** . Yet, **theoretical computation** and **simulation code writing** remain labor-intensive 🧑‍💻.
