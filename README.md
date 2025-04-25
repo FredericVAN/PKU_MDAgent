@@ -14,7 +14,7 @@ The **datasets** are available in the **`PaperDataset`** folder of the article o
 - 🔗 [MDAgent_LSCF_DATASET](https://huggingface.co/datasets/FredericFan/MDAgent_LSCF_DATASET)
   
 The **Large language Model（SFTed）** are available via 🤗 **Hugging Face**:
-
+( Coming soon. We are conducting an internal review and will announce the results soon.）
 - 🔗 [MDQwen2.5-14B](https://huggingface.co/FredericFan/MDQwen2.5-14B)
 
   
