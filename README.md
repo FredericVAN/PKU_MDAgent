@@ -16,8 +16,8 @@ The **datasets** are available in the **`PaperDataset`** folder of the article o
 The **Large language Model（SFTed）** are available via 🤗 **Hugging Face**:
 
 
-- 🔗 [MDQwen2.5-14B](https://huggingface.co/FredericFan/MDQwen2.5-14B)
-
+- 🔗 [MD-LammpsCoder-Qwen2.5-7B](https://huggingface.co/FredericFan/MD-LammpsCoder-Qwen2.5-7B)
+- 🔗 [MD-LammpsEvaluator-Qwen2.5-7B](https://huggingface.co/FredericFan/MD-LammpsEvaluator-Qwen2.5-7B)
   
 ## 🔍 **Introduction**
 
