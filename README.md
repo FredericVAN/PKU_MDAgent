@@ -4,20 +4,20 @@
 
 📄 *Published in* **Scientific Reports**
 
-🔗 [https://www.nature.com/articles/s41598-025-92337-6](https://www.nature.com/articles/s41598-025-92337-6)
+<a href="https://www.nature.com/articles/s41598-025-92337-6">![Nature](https://img.shields.io/badge/Nature-Scientific_Reports-FF6B6B)</a>
 
 🏛️ *By* **Peking University**
 
 The **datasets** are available in the **`PaperDataset`** folder of the article or can be accessed via 🤗 **Hugging Face**:
 
-- 🔗 [MDAgent_LEQS_DATASET](https://huggingface.co/datasets/FredericFan/MDAgent_LEQS_DATASET)
-- 🔗 [MDAgent_LSCF_DATASET](https://huggingface.co/datasets/FredericFan/MDAgent_LSCF_DATASET)
+- <a href="https://huggingface.co/datasets/FredericFan/MDAgent_LEQS_DATASET">![HuggingFace](https://img.shields.io/badge/HuggingFace-MDAgent__LEQS__DATASET-yellow)</a>
+- <a href="https://huggingface.co/datasets/FredericFan/MDAgent_LSCF_DATASET">![HuggingFace](https://img.shields.io/badge/HuggingFace-MDAgent__LSCF__DATASET-yellow)</a>
   
 The **Large language Model（SFTed）** are available via 🤗 **Hugging Face**:
 
 
-- 🔗 [MD-LammpsCoder-Qwen2.5-7B](https://huggingface.co/FredericFan/MD-LammpsCoder-Qwen2.5-7B)
-- 🔗 [MD-LammpsEvaluator-Qwen2.5-7B](https://huggingface.co/FredericFan/MD-LammpsEvaluator-Qwen2.5-7B)
+- <a href="https://huggingface.co/FredericFan/MD-LammpsCoder-Qwen2.5-7B">![HuggingFace](https://img.shields.io/badge/HuggingFace-MD__LammpsCoder__Qwen2.5__7B-yellow)</a>
+- <a href="https://huggingface.co/FredericFan/MD-LammpsEvaluator-Qwen2.5-7B">![HuggingFace](https://img.shields.io/badge/HuggingFace-MD__LammpsEvaluator__Qwen2.5__7B-yellow)</a>
   
 ## 🔍 **Introduction**
 
