@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDAgent - Molecular Dynamics Agent</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>📚 MDAgent</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#home">首页</a>
+                <a href="#introduction">介绍</a>
+                <a href="#features">特性</a>
+                <a href="#datasets">数据集</a>
+                <a href="#methods">方法</a>
+                <a href="https://github.com/FredericVAN/PKU_MDAgent" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Molecular Dynamics Agent</h1>
+                <p class="hero-subtitle">A fine-tuned large language model based molecular dynamics agent for code generation to obtain material thermodynamic parameters</p>
+                <div class="hero-badges">
+                    <a href="https://www.nature.com/articles/s41598-025-92337-6" class="badge badge-nature">
+                        <span class="badge-icon">📄</span>
+                        <span>Nature Scientific Reports</span>
+                    </a>
+                    <a href="https://github.com/FredericVAN/PKU_MDAgent" class="badge badge-github">
+                        <span class="badge-icon">⭐</span>
+                        <span>GitHub</span>
+                    </a>
+                </div>
+                <div class="hero-author">
+                    <p>🏛️ <strong>Peking University</strong></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Introduction Section -->
+    <section id="introduction" class="section">
+        <div class="container">
+            <h2 class="section-title">🔍 Introduction</h2>
+            <div class="intro-content">
+                <p class="intro-text">
+                    In the field of <strong>materials science</strong> 🧬, uncovering the intricate structure–property relationships increasingly relies on <strong>AI-generated content (AIGC)</strong> 🧠 for tasks like <strong>literature mining</strong> and <strong>data analysis</strong>. Yet, <strong>theoretical computation</strong> and <strong>simulation code writing</strong> remain labor-intensive 🧑‍💻.
+                </p>
+                <p class="intro-text">
+                    This study presents a <strong>novel framework</strong>:
+                </p>
+                <div class="highlight-box">
+                    <h3>🚀 Molecular Dynamics Agent (MDAgent)</h3>
+                    <p>A fine-tuned <strong>text-to-code generation agent</strong> empowered by <strong>large language models (LLMs)</strong>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">🧰 Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h3>Automatic Generation</h3>
+                    <p>Automatic generation, execution, and refinement of thermodynamic simulation code</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>LAMMPS Based</h3>
+                    <p>Based on LAMMPS (Large-scale Atomic/Molecular Massively Parallel Simulator)</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>Curated Dataset</h3>
+                    <p>A curated LAMMPS thermodynamic simulation dataset was constructed for fine-tuning</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧑‍🔬</div>
+                    <h3>Expert Evaluated</h3>
+                    <p>Expert evaluations show significant improvement in code quality and relevance</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⏱️</div>
+                    <h3>Time Efficient</h3>
+                    <p>Achieves <strong>42.22% reduction</strong> in task time compared to traditional approaches</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Datasets Section -->
+    <section id="datasets" class="section">
+        <div class="container">
+            <h2 class="section-title">📂 Datasets & Models</h2>
+            <div class="datasets-content">
+                <div class="dataset-section">
+                    <h3>🤗 Datasets</h3>
+                    <p>The datasets are available in the <code>PaperDataset</code> folder or can be accessed via Hugging Face:</p>
+                    <div class="badge-list">
+                        <a href="https://huggingface.co/datasets/FredericFan/MDAgent_LEQS_DATASET" class="badge badge-hf">
+                            <span>MDAgent_LEQS_DATASET</span>
+                        </a>
+                        <a href="https://huggingface.co/datasets/FredericFan/MDAgent_LSCF_DATASET" class="badge badge-hf">
+                            <span>MDAgent_LSCF_DATASET</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="dataset-section">
+                    <h3>🤗 Fine-tuned Models</h3>
+                    <p>The Large language Model (SFTed) are available via Hugging Face:</p>
+                    <div class="badge-list">
+                        <a href="https://huggingface.co/FredericFan/MD-LammpsCoder-Qwen2.5-7B" class="badge badge-hf">
+                            <span>MD-LammpsCoder-Qwen2.5-7B</span>
+                        </a>
+                        <a href="https://huggingface.co/FredericFan/MD-LammpsEvaluator-Qwen2.5-7B" class="badge badge-hf">
+                            <span>MD-LammpsEvaluator-Qwen2.5-7B</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Methods Section -->
+    <section id="methods" class="section section-alt">
+        <div class="container">
+            <h2 class="section-title">Methods</h2>
+            <div class="methods-content">
+                <div class="method-image">
+                    <img src="assets/111.png" alt="Workflow Comparison">
+                    <p class="image-caption">Comparison of thermodynamic analysis workflow with and without the use of Molecular Dynamics Agent (MDAgent).</p>
+                </div>
+                <div class="method-image">
+                    <img src="assets/222.png" alt="Architecture Diagram">
+                    <p class="image-caption">(a) Architecture diagram: MDAgent with Manager, Worker, and evaluator powered by large language models (LLMs), interacting through a user interface. (b) Example of the dataset used.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Citation Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">📖 Citation</h2>
+            <div class="citation-box">
+                <pre><code>@article{magent2024,
+  title={A fine-tuned large language model based molecular dynamics agent for code generation to obtain material thermodynamic parameters},
+  author={...},
+  journal={Scientific Reports},
+  year={2024},
+  url={https://www.nature.com/articles/s41598-025-92337-6}
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Peking University. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/FredericVAN/PKU_MDAgent">GitHub</a>
+                <a href="https://www.nature.com/articles/s41598-025-92337-6">Paper</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
