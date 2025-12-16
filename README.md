@@ -6,6 +6,8 @@
 
 <a href="https://www.nature.com/articles/s41598-025-92337-6">![Nature](https://img.shields.io/badge/Nature-Scientific_Reports-FF6B6B)</a>
 
+<a href="https://fredericvan.github.io/PKU_MDAgent/">![website](https://img.shields.io/badge/website-PKU_MDAgent-blue)</a>
+
 🏛️ *By* **Peking University**
 
 The **datasets** are available in the **`PaperDataset`** folder of the article or can be accessed via 🤗 **Hugging Face**:
