@@ -1,0 +1,47 @@
+{
+  "source": "EvaluationRule.pdf",
+  "columns": [
+    "Dimension",
+    "Description",
+    "Example of Deduction Points",
+    "Deduction Reference Value"
+  ],
+  "rules": [
+    {
+      "dimension": "Syntax Correctness",
+      "description": "Examines whether the script follows LAMMPS syntax, avoiding command errors or typos.",
+      "example_of_deduction_points": "Syntax errors, such as using non-existent LAMMPS commands or spelling mistakes.",
+      "deduction_reference_value": 1
+    },
+    {
+      "dimension": "Logical Consistency",
+      "description": "Assesses whether the script is logically correct in terms of basic physical logic, e.g., whether the lattice structure matches the task requirements.",
+      "example_of_deduction_points": "Simple logical errors, such as using FCC lattice structure when BCC was required.",
+      "deduction_reference_value": 1
+    },
+    {
+      "dimension": "Parameter Rationality",
+      "description": "Examines whether physical parameters (e.g., potential function parameters, ensemble parameters) are scientifically reasonable.",
+      "example_of_deduction_points": "Parameter errors, such as incorrect L-J potential parameters or wrong NPT settings.",
+      "deduction_reference_value": 1
+    },
+    {
+      "dimension": "Core Logic Accuracy",
+      "description": "Assesses whether the script is correct in core physical computation processes, e.g., whether the density calculation method is accurate.",
+      "example_of_deduction_points": "Critical computational logic errors, such as using the wrong density calculation method.",
+      "deduction_reference_value": 2
+    },
+    {
+      "dimension": "Logical Completeness",
+      "description": "Assesses whether the script includes all necessary logical steps, e.g., setting up the potential function, temperature control, etc.",
+      "example_of_deduction_points": "Missing logic, such as not setting a potential function or having no temperature control.",
+      "deduction_reference_value": 2
+    },
+    {
+      "dimension": "Code Completeness",
+      "description": "Examines whether the script structure is complete, and whether it contains all the necessary logical modules to complete the simulation task.",
+      "example_of_deduction_points": "Incomplete code, missing large sections of logic, such as only building the structure without simulating any process.",
+      "deduction_reference_value": 3
+    }
+  ]
+}

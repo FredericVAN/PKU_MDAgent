@@ -1,3 +1,15 @@
 materials-agent-system_1.zip
 paper_dataset.zip
 materials-agent-system.zip
+.venv/
+.vscode/
+.chainlit/translations/
+.files/
+__pycache__/
+*.py[cod]
+*.log
+.env
+.env.*
+!.env.example
+private_docs/
+mdagent_langgraph.py
